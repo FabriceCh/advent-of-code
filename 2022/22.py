@@ -1,4 +1,5 @@
 from utils import read_file
+from trans22 import *
 from typing import List
 from enum import Enum
 import numpy as np
@@ -30,6 +31,12 @@ class Dir(Enum):
     LEFT = 2
     UP = 3
 
+class Ori(Enum):
+    EAST = 0
+    SOUTH = 1
+    WEST = 2
+    NORTH = 3
+
 class Rotator:
     def __init__(self):
         self.current_dir_index = 0
@@ -44,13 +51,49 @@ class Rotator:
         return self.ordering[self.current_dir_index]
 
 
+class FaceShifter:
+    def __init__(self, coming_in_from_ori: Ori, pos_transformer):
+        self.coming_in_from_ori = coming_in_from_ori
+        self.pos_transformer = pos_transformer
+
+    def shift(self, last_pos):
+        new_dir, new_pos = None, None
+        new_pos = self.pos_transformer(last_pos)
+        if self.coming_in_from_ori == Ori.NORTH:
+            new_dir = Dir.DOWN
+            if new_pos[0] != 0:
+                print("problem: coming from north but newpos[0] is not 0")
+        if self.coming_in_from_ori == Ori.EAST:
+            new_dir = Dir.LEFT
+            if new_pos[1] != 49:
+                print("problem: coming from east but newpos[1] is not 49")
+        if self.coming_in_from_ori == Ori.SOUTH:
+            new_dir = Dir.UP
+            if new_pos[0] != 49:
+                print("problem: coming from north but newpos[0] is not 49")
+        if self.coming_in_from_ori == Ori.WEST:
+            new_dir = Dir.RIGHT
+            if new_pos[1] != 0:
+                print("problem: coming from north but newpos[1] is not 0")
+        
+        return new_dir, new_pos
+
+
+
 class Face:
     def __init__(self):
         self.map = []
+
         self.upper_face = None
         self.downward_face = None
         self.right_face = None
         self.left_face = None
+
+        self.upper_face_shifter: FaceShifter = None
+        self.downward_face_shifter: FaceShifter = None
+        self.right_face_shifter: FaceShifter = None
+        self.left_face_shifter: FaceShifter = None
+
         self.id = 1
     
     def add_row(self, row):
@@ -84,6 +127,31 @@ def get_new_pos(pos: List, dir: Dir):
     return new_pos
 
 
+#def get_real_new_pos(pos, dir: Dir, face: Face):
+#    def  update_face(face, new_face):
+#        if new_face is not None:
+#            return new_face
+#        else:
+#            return face
+#    temp_new_pos = get_new_pos(pos, dir)
+#    maxv = face.get_size() - 1
+#    vert = temp_new_pos[0]
+#    hori = temp_new_pos[1]
+#    new_face = face
+#    if vert > maxv: # too down
+#        vert = 0
+#        new_face = update_face(face, face.downward_face)
+#    if vert < 0: # too up
+#        vert = maxv
+#        new_face = update_face(face, face.upper_face)
+#    if hori > maxv: # too right
+#        hori = 0
+#        new_face = update_face(face, face.right_face)
+#    if hori < 0: # too left
+#        hori = maxv
+#        new_face = update_face(face, face.left_face)
+#    return (vert, hori), new_face
+
 def get_real_new_pos(pos, dir: Dir, face: Face):
     def  update_face(face, new_face):
         if new_face is not None:
@@ -94,21 +162,22 @@ def get_real_new_pos(pos, dir: Dir, face: Face):
     maxv = face.get_size() - 1
     vert = temp_new_pos[0]
     hori = temp_new_pos[1]
+    new_pos = temp_new_pos
+    new_dir = dir
     new_face = face
     if vert > maxv: # too down
-        vert = 0
+        new_dir, new_pos = face.downward_face_shifter.shift(pos)
         new_face = update_face(face, face.downward_face)
     if vert < 0: # too up
-        vert = maxv
+        new_dir, new_pos = face.upper_face_shifter.shift(pos)
         new_face = update_face(face, face.upper_face)
     if hori > maxv: # too right
-        hori = 0
+        new_dir, new_pos = face.right_face_shifter.shift(pos)
         new_face = update_face(face, face.right_face)
     if hori < 0: # too left
-        hori = maxv
+        new_dir, new_pos = face.left_face_shifter.shift(pos)
         new_face = update_face(face, face.left_face)
-    return (vert, hori), new_face
-
+    return new_dir, new_pos, new_face
 
 
 def get_faces(ar):
@@ -181,29 +250,65 @@ def arrange_faces_SAMPLE_TEST(faces: List[Face]):
     faces[5].id = 6
 
 def arrange_faces(faces: List[Face]):
-    faces[0].left_face = faces[1]
+    faces[0].left_face = faces[3]
     faces[0].right_face = faces[1]
-    faces[0].upper_face = faces[4]
+    faces[0].upper_face = faces[5]
     faces[0].downward_face = faces[2]
 
-    faces[1].left_face = faces[0]
-    faces[1].right_face = faces[0]
+    faces[0].left_face_shifter = FaceShifter(Ori.WEST, face1_left_trans)
+    faces[0].right_face_shifter = FaceShifter(Ori.WEST, face1_right_trans)
+    faces[0].upper_face_shifter = FaceShifter(Ori.WEST, face1_up_trans)
+    faces[0].downward_face_shifter = FaceShifter(Ori.NORTH, face1_down_trans)
 
+    faces[1].left_face = faces[0]
+    faces[1].right_face = faces[4]
+    faces[1].upper_face = faces[5]
+    faces[1].downward_face = faces[2]
+
+    faces[1].left_face_shifter = FaceShifter(Ori.EAST, face2_left_trans)
+    faces[1].right_face_shifter = FaceShifter(Ori.EAST, face2_right_trans)
+    faces[1].upper_face_shifter = FaceShifter(Ori.SOUTH, face2_up_trans)
+    faces[1].downward_face_shifter = FaceShifter(Ori.EAST, face2_down_trans)
+
+    faces[2].left_face = faces[3]
+    faces[2].right_face = faces[1]
     faces[2].upper_face = faces[0]
     faces[2].downward_face = faces[4]
 
-    faces[3].left_face = faces[4]
+    faces[2].left_face_shifter = FaceShifter(Ori.NORTH, face3_left_trans)
+    faces[2].right_face_shifter = FaceShifter(Ori.SOUTH, face3_right_trans)
+    faces[2].upper_face_shifter = FaceShifter(Ori.SOUTH, face3_up_trans)
+    faces[2].downward_face_shifter = FaceShifter(Ori.NORTH, face3_down_trans)
+
+    faces[3].left_face = faces[0]
     faces[3].right_face = faces[4]
-    faces[3].upper_face = faces[5]
+    faces[3].upper_face = faces[2]
     faces[3].downward_face = faces[5]
 
-    faces[4].left_face = faces[3]
-    faces[4].right_face = faces[3]
-    faces[4].upper_face = faces[2]
-    faces[4].downward_face = faces[0]
+    faces[3].left_face_shifter = FaceShifter(Ori.WEST, face4_left_trans)
+    faces[3].right_face_shifter = FaceShifter(Ori.WEST, face4_right_trans)
+    faces[3].upper_face_shifter = FaceShifter(Ori.WEST, face4_up_trans)
+    faces[3].downward_face_shifter = FaceShifter(Ori.NORTH, face4_down_trans)
 
+    faces[4].left_face = faces[3]
+    faces[4].right_face = faces[1]
+    faces[4].upper_face = faces[2]
+    faces[4].downward_face = faces[5]
+
+    faces[4].left_face_shifter = FaceShifter(Ori.EAST, face5_left_trans)
+    faces[4].right_face_shifter = FaceShifter(Ori.EAST, face5_right_trans)
+    faces[4].upper_face_shifter = FaceShifter(Ori.SOUTH, face5_up_trans)
+    faces[4].downward_face_shifter = FaceShifter(Ori.EAST, face5_down_trans)
+
+    faces[5].left_face = faces[0]
+    faces[5].right_face = faces[4]
     faces[5].upper_face = faces[3]
-    faces[5].downward_face = faces[3]
+    faces[5].downward_face = faces[1]
+
+    faces[5].left_face_shifter = FaceShifter(Ori.NORTH, face6_left_trans)
+    faces[5].right_face_shifter = FaceShifter(Ori.SOUTH, face6_right_trans)
+    faces[5].upper_face_shifter = FaceShifter(Ori.SOUTH, face6_up_trans)
+    faces[5].downward_face_shifter = FaceShifter(Ori.NORTH, face6_down_trans)
 
     faces[0].id = 1
     faces[1].id = 2
@@ -272,11 +377,12 @@ def part1():
         for _ in range(cur_dist):
             #current_face.map[current_pos[0]][current_pos[1]] = "x"
             log_path(current_face, current_pos, rotator.get_current_dir())
-            next_pos, next_face = get_real_new_pos(current_pos, rotator.get_current_dir(), current_face)
+            next_dir, next_pos, next_face = get_real_new_pos(current_pos, rotator.get_current_dir(), current_face)
             if next_face.get_el_at_pos(next_pos) == "#":
                 break
             else:
                 current_face, current_pos = next_face, next_pos
+                rotator.current_dir_index = next_dir.value
             log_path(current_face, current_pos, rotator.get_current_dir())
         if cur_dd_index < len(input_dirs):
             cur_in_dir = input_dirs[cur_dd_index]
@@ -288,6 +394,5 @@ def part1():
         print(f)
     
     print((1000 * current_pos[0]) + (4 * current_pos[1]) + rotator.get_current_dir().value)
-    print(rotator.get_current_dir())
 
 part1()
