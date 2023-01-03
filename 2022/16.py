@@ -1,5 +1,6 @@
 import heapq
 import copy
+import itertools
 from utils import read_file
 
 ar = read_file("/home/fabrice/advent-of-code/2022/input")
@@ -16,6 +17,8 @@ ar2 = [
     "Valve II has flow rate=0; tunnels lead to valves AA, JJ",
     "Valve JJ has flow rate=21; tunnel leads to valve II",
 ]
+
+MAX_TIME = 26 # 30 for part 1
 
 def lines_to_valves(lines):
     valves = {}
@@ -56,9 +59,9 @@ def dijkstra(valves, start, pos_valves):
 
 def get_next_possible_valves(sol, all_dists):
     next_valves = []
-    remaining_time = 30 - sol["time"] + 1
-    #remaining_time = 30 - sol["time"]
-    remaining_time = 30 - sol["time"] - 1
+    remaining_time = MAX_TIME - sol["time"] + 1
+    #remaining_time = MAX_TIME - sol["time"]
+    remaining_time = MAX_TIME - sol["time"] - 1
     for v in sol["unseen"]:
         if all_dists[sol["current"]][v] < remaining_time and v != sol["current"]:
             next_valves.append(v)
@@ -74,15 +77,15 @@ def update_sol_open_valve(sol, valves):
     new_sol["unseen"].remove(new_sol["current"])
     return new_sol
 
-def part1():
-    valves = lines_to_valves(ar)
-    pos_valves = find_positive_valves(valves)
+def part1(valves_to_visit, valves, pos_valves, all_dists):
+    #valves = lines_to_valves(ar)
+    #pos_valves = find_positive_valves(valves)
 
-    all_dists = {"AA": dijkstra(valves, "AA", pos_valves)}
-    for pp in pos_valves:
-        all_dists[pp] = dijkstra(valves, pp, pos_valves)
+    #all_dists = {"AA": dijkstra(valves, "AA", pos_valves)}
+    #for pp in pos_valves:
+    #    all_dists[pp] = dijkstra(valves, pp, pos_valves)
 
-    unseen = copy.deepcopy(pos_valves)
+    unseen = copy.deepcopy(valves_to_visit)
     opened = []
     start = "AA"
     time = 0
@@ -95,7 +98,7 @@ def part1():
         sol111 = solutions.pop()
         sol = copy.deepcopy(sol111)
 
-        if sol["time"] > 30:
+        if sol["time"] > MAX_TIME:
             print("wtf time exceeded shoudnt happen")
             break
         next_valves = get_next_possible_valves(sol, all_dists)
@@ -107,13 +110,13 @@ def part1():
             if new_sol["current"] not in new_sol["opened"] and new_sol["current"] in new_sol["unseen"]:
                 new_sol = update_sol_open_valve(new_sol, valves)
             # compute end of game score
-            remaining_time = 30 - new_sol["time"]
+            remaining_time = MAX_TIME - new_sol["time"]
             final_score = new_sol["score"] + new_sol["flow"] * remaining_time
             #print(sol)
             if final_score > big_max:
                 big_max = final_score
-                print(final_score)
-                print(new_sol)
+                #print(final_score)
+                #print(new_sol)
         
         else:
             if sol["current"] != "AA":
@@ -133,6 +136,34 @@ def part1():
                     first_sol["time"] = sol["time"] + all_dists[sol["current"]][nv]
                     first_sol["current"] = nv
                     solutions.append(first_sol)
-    print(big_max)
+    #print(big_max)
+    return big_max
 
-part1()
+#part1()
+
+def two_partitions(S):
+    res_list = []
+    for l in range(0,int(len(S)/2)+1):
+        combis = set(itertools.combinations(S,l))
+        for c in combis:
+            res_list.append((sorted(list(c)), sorted(list(S-set(c)))))
+    return res_list
+
+
+def part2():
+    valves = lines_to_valves(ar)
+    pos_valves = find_positive_valves(valves)
+    all_dists = {"AA": dijkstra(valves, "AA", pos_valves)}
+    for pp in pos_valves:
+        all_dists[pp] = dijkstra(valves, pp, pos_valves)
+
+    all_combs = two_partitions(set(pos_valves))[::-1]
+    mmax = 0
+    for comb in all_combs:
+        humn_nodes, elephant_nodes = comb[0], comb[1]
+        score = part1(humn_nodes, valves, pos_valves, all_dists) + part1(elephant_nodes, valves, pos_valves, all_dists)
+        if score > mmax:
+            print(score)
+            mmax = score
+
+part2()
