@@ -1,16 +1,13 @@
-from utils import read_file
+from functools import cache
 from enum import Enum
+from typing import List, Tuple
 import copy
 
-lines = read_file("/home/fabrice/advent-of-code/2022/input")
+lines = []
 
-lines = [
-    "1 4 2 3 14 2 7",
-    "2 2 3 3 8 3 12",
-]
-
-ar = [[int(a) for a in line.split(" ") if a != ""] for line in lines]
-
+file = open("/home/fab/AOC/2022/input", "r")
+for l in file.readlines():
+    lines.append(l.rstrip())
 
 class Choice(Enum):
     BUILD_ORE_ROBOT = 1
@@ -25,229 +22,191 @@ class Config:
         self.clay_robot_cost = {"ore": config_line[2]}
         self.obs_robot_cost = {"ore": config_line[3], "clay": config_line[4]}
         self.geode_robot_cost = {"ore": config_line[5], "obs": config_line[6]}
-        self.MAX_TIME = 24
+        self.MAX_TIME = 32
+        self.MAX_FOUND = 0
 
-    def __str__(self):
-        string = f"""Config Id: {self.id}
-    ore_robot_cost: {self.ore_robot_cost}
-    clay_robot_cost: {self.clay_robot_cost}
-
-    obs_robot_cost: {self.obs_robot_cost}
-    geode_robot_cost: {self.geode_robot_cost}"""
-        return string
 
 class GameData:
-    def __init__(self):
-        self.current_time = 1
-        # resources
-        self.ore = 0
-        self.clay = 0
-        self.obs = 0
-        self.geode = 0
-        # robots
-        self.ore_robots = 1
-        self.clay_robots = 0
-        self.obs_robots = 0
-        self.geode_robots = 0
+    def __init__(self, arr_repr=None):
+        if arr_repr is None:
+            self.current_time = 1
+            self.ore = 0
+            self.clay = 0
+            self.obs = 0
+            self.geode = 0
+            self.ore_robots = 1
+            self.clay_robots = 0
+            self.obs_robots = 0
+            self.geode_robots = 0
+        else:
+            self.current_time = arr_repr[0]
+            self.ore = arr_repr[1]
+            self.clay = arr_repr[2]
+            self.obs = arr_repr[3]
+            self.geode = arr_repr[4]
+            self.ore_robots = arr_repr[5]
+            self.clay_robots = arr_repr[6]
+            self.obs_robots = arr_repr[7]
+            self.geode_robots = arr_repr[8]
+            
+    def get_arr_repr(self):
+        return (
+            self.current_time,
+            self.ore,
+            self.clay,
+            self.obs,
+            self.geode,
+            self.ore_robots,
+            self.clay_robots,
+            self.obs_robots,
+            self.geode_robots,
+        )
 
-    def __str__(self):
-        string = f"""current_time: {self.current_time}
-        ore: {self.ore}
-        clay: {self.clay}
-        obs: {self.obs}
-        geode: {self.geode}
-        ore_robots: {self.ore_robots}
-        clay_robots: {self.clay_robots}
-        obs_robots: {self.obs_robots}
-        geode_robots: {self.geode_robots}"""
-        return string
+def lines_to_game_configs(lines):
+    configs = []
+    for line in lines:
+        config_line = []
+        words = line.split(" ")
+        config_line.append(int(words[1].split(":")[0]))
+        config_line.append(int(words[6]))
+        config_line.append(int(words[12]))
+        config_line.append(int(words[18]))
+        config_line.append(int(words[21]))
+        config_line.append(int(words[27]))
+        config_line.append(int(words[30]))
+        configs.append(Config(config_line=config_line))
+    return configs
 
+def get_resources_from_choice(choice, config):
+        if choice == Choice.BUILD_ORE_ROBOT:
+            return config.ore_robot_cost
+        elif choice == Choice.BUILD_CLAY_ROBOT:
+            return  config.clay_robot_cost
+        elif choice == Choice.BUILD_OBS_ROBOT:
+            return config.obs_robot_cost
+        elif choice == Choice.BUILD_GEODE_ROBOT:
+            return config.geode_robot_cost
 
-class Game:
-
-    max_found = 0
-
-    def __init__(self, game_data: GameData = None, config: Config = None, choice: Choice = "begin", depth = 0, bo = []):
-        self.game_data : GameData = game_data
-        if self.game_data is None:
-            self.game_data = GameData()
-        self.config: Config = config
-        self.choice: Choice = choice
-        self.depth = depth
-        self.building = False
-        self.choice_generator = self._generate_choices
-        self.bo = bo
-
-    def sanity_check(self):
-        problem = self.game_data.ore < 0
-        problem = problem or self.game_data.clay < 0
-        problem = problem or self.game_data.obs < 0
-        #problem = problem or self.game_data.ore_robots + self.game_data.clay_robots + self.game_data.obs_robots + self.game_data.geode_robots > self.game_data.current_time
-        problem = problem or self.game_data.current_time > self.config.MAX_TIME
-        if problem:
-            print("problem")
-
-    def _get_resources_from_choice(self):
-        if self.choice == Choice.BUILD_ORE_ROBOT:
-            return self.config.ore_robot_cost
-        elif self.choice == Choice.BUILD_CLAY_ROBOT:
-            return self.config.clay_robot_cost
-        elif self.choice == Choice.BUILD_OBS_ROBOT:
-            return self.config.obs_robot_cost
-        elif self.choice == Choice.BUILD_GEODE_ROBOT:
-            return self.config.geode_robot_cost
-
-    def _can_be_built(self):
-        required = self._get_resources_from_choice()
+def can_be_built(choice, config, game_data):
+        required = get_resources_from_choice(choice, config)
         for k, v in required.items():
             if k == "ore":
-                if v > self.game_data.ore:
+                if v > game_data.ore:
                     return False
             elif k == "clay":
-                if v > self.game_data.clay:
+                if v > game_data.clay:
                     return False
             elif k == "obs":
-                if v > self.game_data.obs:
+                if v > game_data.obs:
                     return False
         return True
 
-    def _start_build(self):
-        if not self._can_be_built():
-            print("problem")
-        required = self._get_resources_from_choice()
-        for k, v in required.items():
+def mine(game_data):
+    game_data.ore += game_data.ore_robots
+    game_data.clay += game_data.clay_robots
+    game_data.obs += game_data.obs_robots
+    game_data.geode += game_data.geode_robots
+
+def build(game_data, choice, config):
+    res = get_resources_from_choice(choice, config)
+    if choice == Choice.BUILD_ORE_ROBOT:
+        game_data.ore_robots += 1
+    elif choice == Choice.BUILD_CLAY_ROBOT:
+        game_data.clay_robots += 1
+    elif choice == Choice.BUILD_OBS_ROBOT:
+        game_data.obs_robots += 1
+    elif choice == Choice.BUILD_GEODE_ROBOT:
+        game_data.geode_robots += 1
+    for k, v in res.items():
             if k == "ore":
-                self.game_data.ore -= v
+                game_data.ore -= v
             elif k == "clay":
-                self.game_data.clay -= v
+                game_data.clay -= v
             elif k == "obs":
-                self.game_data.obs -= v
-        self.building = True
+                game_data.obs -= v
 
-    def _mine(self, n_turns):
-        self.game_data.ore += self.game_data.ore_robots * n_turns
-        self.game_data.clay += self.game_data.clay_robots * n_turns
-        self.game_data.obs += self.game_data.obs_robots * n_turns
-        self.game_data.geode += self.game_data.geode_robots * n_turns
+def generate_choices(game_data, config):
+    choices = []
 
-    def _end_build(self):
-        if self.choice == Choice.BUILD_ORE_ROBOT:
-            self.game_data.ore_robots += 1
-        elif self.choice == Choice.BUILD_CLAY_ROBOT:
-            self.game_data.clay_robots += 1
-        elif self.choice == Choice.BUILD_OBS_ROBOT:
-            self.game_data.obs_robots += 1
-        elif self.choice == Choice.BUILD_GEODE_ROBOT:
-            self.game_data.geode_robots += 1
-        self.bo.append((self.game_data.current_time, self.choice))
+    max_ore_cost = max([
+        config.ore_robot_cost["ore"],
+        config.clay_robot_cost["ore"],
+        config.obs_robot_cost["ore"],
+        config.geode_robot_cost["ore"],
+        ])
 
-    def _get_remaining_time(self):
-        return (self.config.MAX_TIME - self.game_data.current_time) + 1
+    if game_data.ore_robots < max_ore_cost:
+        choices.append(Choice.BUILD_ORE_ROBOT)
+    if game_data.clay_robots < config.obs_robot_cost["clay"]:
+        choices.append(Choice.BUILD_CLAY_ROBOT)
+    if game_data.clay_robots >= 1 and game_data.obs_robots < config.geode_robot_cost["obs"]:
+        choices.append(Choice.BUILD_OBS_ROBOT)
+    if game_data.obs_robots >= 1:
+        choices.append(Choice.BUILD_GEODE_ROBOT)
 
-    def _get_potential(self):
-        remaining_time = self._get_remaining_time()
-        return sum([i for i in range(remaining_time)]) + self.game_data.geode
+    return choices
 
-    def _generate_choices(self):
-        choices = []
-        if self._get_potential() < Game.max_found:
-            return choices
 
-        max_ore_cost = max([
-            self.config.ore_robot_cost["ore"],
-            self.config.clay_robot_cost["ore"],
-            self.config.obs_robot_cost["ore"],
-            self.config.geode_robot_cost["ore"],
-            ])
-        if self.game_data.ore_robots < max_ore_cost:
-            choices.append(Choice.BUILD_ORE_ROBOT)
-        if self.game_data.clay_robots < self.config.obs_robot_cost["clay"]:
-            choices.append(Choice.BUILD_CLAY_ROBOT)
-        if self.game_data.clay_robots >= 1 and self.game_data.obs_robots < self.config.geode_robot_cost["obs"]:
-            choices.append(Choice.BUILD_OBS_ROBOT)
-        if self.game_data.obs_robots >= 1:
-            choices.append(Choice.BUILD_GEODE_ROBOT)
-        return choices
+def get_remaining_time(config, game_data):
+    return (config.MAX_TIME - game_data.current_time) + 1
 
-    def _get_scores_on_split(self):
-        new_choices = self.choice_generator()
-        if len(new_choices) == 0:
-            return 0
-        for c in new_choices:
-            g = Game(game_data=copy.deepcopy(self.game_data), config=self.config, choice=c, depth=self.depth + 1, bo = copy.deepcopy(self.bo))
-            g.execute_turns()
+def get_potential(config, game_data):
+    remaining_time = get_remaining_time(config, game_data)
+    potential = sum([i + game_data.geode_robots for i in range(remaining_time)]) + game_data.geode
+    return potential > config.MAX_FOUND
 
-    def _gg_n_turns_crisse(self, cost, current_amt, n_robots):
-        missing_amt = cost - current_amt
-        if missing_amt % n_robots == 0:
-            return missing_amt // n_robots + 1
-        else:
-            return missing_amt // n_robots + 2
+@cache
+def get_max_geodes(gd: Tuple, conf: Config, choice: Choice = None):
+    data = GameData(arr_repr=gd)
 
-    def _get_n_turns_until_build(self):
-        required = self._get_resources_from_choice()
-        n_turns = 1
-        for k, v in required.items():
-            if k == "ore":
-                if v > self.game_data.ore:
-                    n_turns = max(n_turns, self._gg_n_turns_crisse(v, self.game_data.ore, self.game_data.ore_robots))
-            elif k == "clay":
-                if v > self.game_data.clay:
-                    n_turns = max(n_turns, self._gg_n_turns_crisse(v, self.game_data.clay, self.game_data.clay_robots))
-            elif k == "obs":
-                if v > self.game_data.obs:
-                    n_turns = max(n_turns, self._gg_n_turns_crisse(v, self.game_data.obs, self.game_data.obs_robots))
-        return n_turns
+    if not get_potential(conf, data):
+        return 0
 
-    def execute_turns(self):
-        self.sanity_check()
+    if choice is None:
+        return gen_choices_max([Choice.BUILD_CLAY_ROBOT, Choice.BUILD_ORE_ROBOT], data, conf)
 
-        if self.choice == "begin":
-            return self._get_scores_on_split()
+    if data.current_time == conf.MAX_TIME + 1:
+        return data.geode
+    building = can_be_built(choice, conf, data)
+    mine(data)
+    data.current_time += 1
+    if building:
+        build(data, choice, conf)
+        choices = generate_choices(data, conf)
+        return gen_choices_max(choices, data, conf)
+    else:
+        return get_max_geodes(data.get_arr_repr(), conf, choice)
 
-        n_turns = self._get_n_turns_until_build()
 
-        if self.game_data.current_time + n_turns >= self.config.MAX_TIME + 1:
-            current_score = self.game_data.geode + self.game_data.geode_robots * (self._get_remaining_time())
-            if current_score > Game.max_found:
-                Game.max_found = current_score
-                print("SCORE:", current_score)
-                print(self.bo)
-                #print(self.game_data)
-            return
-        self.game_data.current_time += n_turns
-        self._mine(n_turns)
-        self._start_build()
-        self._end_build()
-        self._get_scores_on_split()
-            
+
+def gen_choices_max(choices: List, gd, conf):
+    scores = []
+    for c in choices:
+        scores.append(get_max_geodes(copy.deepcopy(gd.get_arr_repr()), conf, c))
+    conf.MAX_FOUND = max(conf.MAX_FOUND, max(scores))
+    return max(scores)
+
+
+def part1():
+    answer = 0
+    configs = lines_to_game_configs(lines)
+    for c in configs:
+        gd = GameData()
+        geodes = get_max_geodes(gd.get_arr_repr(), c)
+        print("found", geodes, "geodes for id", c.id)
+        answer += geodes * c.id
+    print(answer)
+#part1()
+
+
 def part2():
     answer = 1
-    print(ar[:3])
-    for l in ar[:3]:
-        geodes = 0
-        config = Config(l)
-        game = Game(config=config)
-        Game.max_found = 0
-        game.execute_turns()
-        geodes = Game.max_found
+    configs = lines_to_game_configs(lines)
+    for c in configs[:3]:
+        gd = GameData()
+        geodes = get_max_geodes(gd.get_arr_repr(), c)
+        print("found", geodes, "geodes for id", c.id)
         answer *= geodes
-        print("geodes: ", geodes)
     print(answer)
-
-#def part1():
-#    # change config to 24
-#    answer = 0
-#    for l in ar:
-#        config = Config(l)
-#        gd = GameData(config)
-#        game = Game(gd)
-#        game.max_found = 0
-#        game.execute_turns()
-#        geodes = Game.max_found
-#        print(Game.best_build_order)
-#        answer += geodes * game.config.id
-#        print("geodes: ", geodes)
-#    print(answer)
-
 part2()
+
