@@ -3,8 +3,6 @@ from utils import read_file
 ar = read_file("/home/fabrice/advent-of-code/2022/input")
 
 
-
-
 def part1():
     answer = 0
     cycle = 1

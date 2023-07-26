@@ -4,11 +4,11 @@ ar = read_file("/home/fabrice/advent-of-code/2022/input")
 ar = ar[10:]
 
 print(ar[0])
-a = " ", R
+a = [" ",
     "H", 
     "M", 
     "P", 
-    "Z", 
+    "Z", ]
 
 piles = {
     1: ["R",

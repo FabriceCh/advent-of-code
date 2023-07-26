@@ -2,7 +2,7 @@ from aocd import get_data
 ar = get_data(day=8, year=2022)
 ar = ar.splitlines()
 
-ar2 = [  "30373",
+ar2 = [ "30373",
         "25512",
         "65332",
         "33549",
