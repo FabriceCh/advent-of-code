@@ -138,9 +138,9 @@ class Tower:
         else:
             self.grid[self.current_rock[0], self.current_rock[1]] = True
             self.highest_point_height = max(self.highest_point_height - self.current_fall_count + max(self.current_rock[0]) - min(self.current_rock[0]) + 1, self.highest_point_height)
-            self.grid = self.grid[len(self.grid) - (self.highest_point_height + 1):, 🙂
+            self.grid = self.grid[len(self.grid) - (self.highest_point_height + 1):, :]
             if len(self.grid) > self.MAX_GRID_LEN:
-                self.grid = self.grid[:-self.REMOVABLE_LEN, 🙂
+                self.grid = self.grid[:-self.REMOVABLE_LEN, :]
                 self.total_height += self.REMOVABLE_LEN
                 self.highest_point_height -= self.REMOVABLE_LEN
         return can_fall
