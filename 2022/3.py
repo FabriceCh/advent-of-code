@@ -1,7 +1,7 @@
 from utils import read_file
 
 ar = read_file("/home/fabrice/advent-of-code/2022/input")
-ar = [
+a = [
     'vJrwpWtwJgWrhcsFMMfFFhFp',
     'jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL',
     'PmmdzqPrVvPwwTWBwg',
@@ -27,4 +27,13 @@ def part1(ar):
                 break
     print(priorities_sum)
 
-part1(ar)
+def part2(ar):
+    priorities_sum = 0
+    for i in range (0, len(ar), 3):
+        for l in ar[i]:
+            if l in ar[i + 1] and l in ar[i + 2]:
+                priorities_sum += letter_to_priority(l)
+                break
+    print(priorities_sum)
+
+part2(ar)
