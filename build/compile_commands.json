@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/fabrice/advent-of-code/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/cmaketest.dir/main.cpp.o -c /home/fabrice/advent-of-code/main.cpp",
+  "file": "/home/fabrice/advent-of-code/main.cpp"
+}
+]
