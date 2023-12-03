@@ -56,7 +56,7 @@ void updateGearsMap(std::map<std::pair<int, int>, std::vector<int>> &gears, int 
     }
 }
 
-int problem()
+int problem2()
 {
     vector<string> ar = readInput();
     map<pair<int, int>, vector<int>> gearsMap;
