@@ -1,5 +1,5 @@
 #include <iostream>
-#include "2023/5.cpp"
+#include "2023/6.cpp"
 
 int main(int, char **)
 {
