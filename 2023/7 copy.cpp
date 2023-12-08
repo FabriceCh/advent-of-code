@@ -23,13 +23,11 @@ class Hand
 private:
     int cards[5];
     int bid;
-    string _line;
 
 public:
     Hand(const vector<string> &line)
     {
         bid = stoi(line[1]);
-        _line = line[0];
         for (int i = 0; i < line[0].size(); i++)
         {
             if (line[0][i] == 'T')
@@ -38,7 +36,7 @@ public:
             }
             else if (line[0][i] == 'J')
             {
-                cards[i] = 1;
+                cards[i] = 11;
             }
             else if (line[0][i] == 'Q')
             {
@@ -60,7 +58,6 @@ public:
     }
     int *getCards() { return cards; }
     int getBid() { return bid; }
-    string getLine() { return _line; }
 
     bool resolveTie(const Hand &h)
     {
@@ -78,14 +75,8 @@ public:
         const
     {
         map<int, int> occurences;
-        int nJokers = 0;
         for (int i = 0; i < 5; i++)
         {
-            if (cards[i] == 1)
-            { // joker
-                nJokers++;
-                continue;
-            }
             map<int, int>::iterator occIt = occurences.find(cards[i]);
             if (occIt == occurences.end())
             {
@@ -96,25 +87,6 @@ public:
                 occIt->second++;
             }
         }
-        if (nJokers == 5)
-        {
-            return 6;
-        }
-        if (nJokers > 0)
-        {
-            int maxKeyFound = cards[0];
-            int maxFound = 0;
-            for (auto x : occurences)
-            {
-                if (x.second > maxFound)
-                {
-                    maxFound = x.second;
-                    maxKeyFound = x.first;
-                }
-            }
-            occurences[maxKeyFound] += nJokers;
-        }
-
         if (occurences.size() == 1)
         {
             return 6;
@@ -169,7 +141,6 @@ public:
 void problem()
 {
     vector<string> ar = readInput();
-    // ar = {"1234J"}
     vector<Hand> hands;
     for (string a : ar)
     {
@@ -180,8 +151,7 @@ void problem()
     for (int i = 0; i < hands.size(); i++)
     {
         total += (hands[i].getBid() * (i + 1));
-        cout << hands[i].getLine() << endl;
-        // cout << "adding " << hands[i].getBid() << " * " << i + 1 << endl;
+        cout << "adding " << hands[i].getBid() << " * " << i + 1 << endl;
     }
     cout << total << endl;
 }
