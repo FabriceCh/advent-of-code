@@ -6,4 +6,7 @@ def read_file(path):
     return arr
 
 
-
+if __name__ == "__main__":
+    # space reserved for testing
+    arr = [1, 2, 23, 4, "adgf"]
+    [print(a) for a in arr]
