@@ -16,11 +16,7 @@ int find_next(vector<int> nums)
         nextSequence.push_back(diff);
         isAllZeros = (isAllZeros && diff == 0);
     }
-    for (int nn : nextSequence)
-    {
-        cout << nn << " ";
-    }
-    cout << endl;
+
     if (isAllZeros)
     {
         return nums[nums.size() - 1];
@@ -28,7 +24,6 @@ int find_next(vector<int> nums)
     else
     {
         int below = find_next(nextSequence);
-        cout << below << "+" << nums[nums.size()] << endl;
         return below + nums[nums.size() - 1];
     }
 }
@@ -43,11 +38,7 @@ int find_previous(vector<int> nums)
         nextSequence.push_back(diff);
         isAllZeros = (isAllZeros && diff == 0);
     }
-    for (int nn : nextSequence)
-    {
-        cout << nn << " ";
-    }
-    cout << endl;
+
     if (isAllZeros)
     {
         return nums[0];
@@ -55,7 +46,6 @@ int find_previous(vector<int> nums)
     else
     {
         int below = find_previous(nextSequence);
-        cout << below << "+" << nums[0] << endl;
         return nums[0] - below;
     }
 }
@@ -74,7 +64,6 @@ void problem()
             nums.push_back(stoi(strn));
         }
         int ans = find_previous(nums);
-        cout << ans << endl;
         total += ans;
     }
     cout << "total: " << total << endl;
