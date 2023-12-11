@@ -5,16 +5,31 @@
 #include <numeric>
 #include <chrono>
 
-bool areAllOk(vector<string> &cour)
+bool areAllOk(vector<int> &pass)
 {
-    for (string cs : cour)
+    int bi = pass[0];
+    for (int ii : pass)
     {
-        if (cs[2] != 'Z')
+        if (ii != bi)
         {
             return false;
         }
     }
     return true;
+}
+
+long long gcd(long long a, long long b)
+{
+    if (b == 0)
+    {
+        return a;
+    }
+    return gcd(b, a % b);
+}
+
+long long llcm(long long a, long long b)
+{
+    return (a * b) / gcd(a, b);
 }
 
 void problem()
@@ -27,7 +42,7 @@ void problem()
     //"AAA BBB BBB",
     //"BBB AAA ZZZ",
     //"ZZZ ZZZ ZZZ"};
-    ar = {
+    vector<string> ar2 = {
         "LR",
 
         "11A 11B XXX",
@@ -53,22 +68,30 @@ void problem()
         pair<string, string> lr(a[1], a[2]);
         mapping.insert(pair<string, pair<string, string>>(a[0], lr));
     }
-    int count = 0;
-    int i = 0;
-    while (!areAllOk(cur))
+    vector<int> firstPass, secondPass;
+
+    for (string cu : cur)
     {
-        count++;
-        for (int j = 0; j < cur.size(); j++)
+        int i = 0;
+        int count = 0;
+        while (cu[2] != 'Z')
         {
             if (instructions[i] == 'L')
             {
-                cur[j] = mapping[cur[j]].first;
+                cu = mapping[cu].first;
             }
             else
             {
-                cur[j] = mapping[cur[j]].second;
+                cu = mapping[cu].second;
             }
+            i++;
+            count++;
+            i = i % instructions.size();
         }
+        firstPass.push_back(count);
     }
-    cout << count << endl;
+
+    long long leastCommonMultiple = llcm(llcm(llcm(llcm(llcm(firstPass[0], firstPass[1]), firstPass[2]), firstPass[3]), firstPass[4]), firstPass[5]);
+
+    cout << leastCommonMultiple << endl;
 }

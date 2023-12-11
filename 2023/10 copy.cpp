@@ -94,7 +94,7 @@ public:
     }
 };
 
-Direction findInitialPipes(int i, int j, vector<string> &ar)
+Direction findInitialPipes(int i, int j, vector<string> ar)
 {
     for (int d = 0; d < 4; d++)
     {
@@ -108,8 +108,10 @@ Direction findInitialPipes(int i, int j, vector<string> &ar)
     }
 }
 
-pair<int, int> findSPos(vector<string> &ar)
+void problem()
 {
+    pair<int, int> animalPos;
+    vector<string> ar = readInput();
     for (int i = 0; i < ar.size(); i++)
     {
         string l = ar[i];
@@ -118,116 +120,25 @@ pair<int, int> findSPos(vector<string> &ar)
             char cc = l[j];
             if (cc == 'S')
             {
-                return pair<int, int>(i, j);
+                animalPos = pair<int, int>(i, j);
             }
         }
     }
-}
 
-set<pair<int, int>> getLoop(vector<string> &ar, pair<int, int> &animalPos)
-{
-    set<pair<int, int>> loop;
     Direction currentLooks = findInitialPipes(animalPos.first, animalPos.second, ar);
     pair<int, int> currentPos = getNextPosition(currentLooks, animalPos.first, animalPos.second);
     currentLooks = reverse(currentLooks);
     int dis = 1;
-    loop.insert(animalPos);
-    loop.insert(currentPos);
 
     while (currentPos != animalPos)
     {
+        cout << currentPos.first << " " << currentPos.second << endl;
         Node node = Node(ar[currentPos.first][currentPos.second]);
         currentLooks = node.getNextDirection(currentLooks);
         currentPos = getNextPosition(currentLooks, currentPos.first, currentPos.second);
         currentLooks = reverse(currentLooks);
         dis++;
-        loop.insert(currentPos);
     }
-    return loop;
-}
-
-void printLoop(const vector<string> &ar, const set<pair<int, int>> &loop, const set<pair<int, int>> &insides)
-{
-    for (int i = 0; i < ar.size(); i++)
-    {
-        string l = ar[i];
-        for (int j = 0; j < l.size(); j++)
-        {
-            if (loop.count(pair<int, int>(i, j)))
-            {
-                cout << "x";
-            }
-            else if (insides.count(pair<int, int>(i, j)))
-            {
-                cout << "I";
-            }
-            else
-            {
-                cout << ".";
-            }
-        }
-        cout << endl;
-    }
-}
-
-int nextNonLoopTileLineIndex(const string &line, int j, bool *inside)
-{
-    char sym = line[j];
-    if (sym != 'L' && sym != 'F')
-    {
-        // cout << sym;
-        *inside = !*inside;
-        return j;
-    }
-    else
-    {
-        j++;
-        cout << sym;
-        while (line[j] == '-')
-        {
-            cout << '-';
-            j++;
-        }
-        if ((sym == 'F' && line[j] == 'J') || (sym == 'L' && line[j] == '7'))
-        {
-            *inside = !*inside;
-        }
-        return j;
-    }
-}
-
-void problem()
-{
-    vector<string> ar = readInput();
-    pair<int, int> animalPos = findSPos(ar);
-
-    set<pair<int, int>> loop = getLoop(ar, animalPos);
-    set<pair<int, int>> insides;
-    int total = 0;
-    for (int i = 0; i < ar.size(); i++)
-    {
-        string l = ar[i];
-        bool inside = false;
-        for (int j = 0; j < l.size(); j++)
-        {
-            if (loop.count(pair<int, int>(i, j)))
-            {
-                j = nextNonLoopTileLineIndex(l, j, &inside);
-                cout << ar[i][j];
-            }
-            else if (inside)
-            {
-                insides.insert(pair<int, int>(i, j));
-                total++;
-                cout << 'I';
-            }
-            else
-            {
-                cout << 'O';
-            }
-        }
-        cout << endl;
-    }
-    // printLoop(ar, loop, insides);
-    cout << "TOTAL: " << total << endl;
+    cout << "total distance: " << dis << endl;
+    cout << "dist/2: " << dis / 2 << endl;
 }
