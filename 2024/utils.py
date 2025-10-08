@@ -1,4 +1,5 @@
-import typing
+from collections.abc import Sequence
+from typing import Callable
 
 
 def read_file(path):
@@ -30,84 +31,99 @@ class Grid:
     2D grid-like operations
     """
 
-    def __init__(self, gridLike: list[list]):
-        self.height = len(gridLike)
-        self.width = len(gridLike[0])
-        self.grid = gridLike
+    def __init__(self, gridLike: Sequence[str | list]):
+        self._height = len(gridLike)
+        self._width = len(gridLike[0])
+        self._grid = self.convert_list_str_to_list_list(gridLike)
+
+    def convert_list_str_to_list_list(
+        self, list_in: Sequence[str | list]
+    ) -> list[list]:
+        return [[char for char in line] for line in list_in]
 
     def __str__(self):
-        return "\n".join(" ".join(map(str, sl)) for sl in self.grid)
+        return "\n".join(" ".join(map(str, sl)) for sl in self._grid)
 
     def __iter__(self):
-        self.x_iter = 0
-        self.y_iter = 0
+        self._x_iter = 0
+        self._y_iter = 0
         return self
 
     def __next__(self):
-        x, y = self.x_iter, self.y_iter
-        if y == self.height or x == self.width:
+        x, y = self._x_iter, self._y_iter
+        if y == self._height or x == self._width:
             raise StopIteration
         value = self.get(x, y)
-        if self.x_iter < self.width - 1:
-            self.x_iter += 1
+        if self._x_iter < self._width - 1:
+            self._x_iter += 1
         else:
-            self.x_iter = 0
-            self.y_iter += 1
+            self._x_iter = 0
+            self._y_iter += 1
         return value, x, y
 
+    def cast_to_int(self):
+        self._grid = [[int(char) for char in line] for line in self._grid]
+
     def is_x_out_of_bounds(self, x):
-        return x < 0 or x >= self.width
+        return x < 0 or x >= self._width
 
     def is_y_out_of_bounds(self, y):
-        return y < 0 or y >= self.height
+        return y < 0 or y >= self._height
 
     def is_out_of_bounds(self, x, y):
         return self.is_x_out_of_bounds(x) or self.is_y_out_of_bounds(y)
 
+    def set(self, x: int, y: int, value):
+        if self.is_out_of_bounds(x, y):
+            raise IndexError
+        self._grid[y][x] = value
+
     # get the value out of a position
-    def get(self, x, y):
+    def get(self, x: int, y: int):
         if x < 0 or y < 0:
             raise IndexError
-        return self.grid[y][x]
+        return self._grid[y][x]
 
-    def get_south(self, x, y):
+    def get_south(self, x: int, y: int):
         return self.get(x, y + 1)
 
-    def get_north(self, x, y):
+    def get_north(self, x: int, y: int):
         return self.get(x, y - 1)
 
-    def get_west(self, x, y):
+    def get_west(self, x: int, y: int):
         return self.get(x - 1, y)
 
-    def get_east(self, x, y):
+    def get_east(self, x: int, y: int):
         return self.get(x + 1, y)
 
     # get coordinates of neighbors
-    def get_south_coord(self, x, y):
+    def get_south_coord(self, x: int, y: int) -> tuple[int, int]:
         return (x, y + 1)
 
-    def get_north_coord(self, x, y):
+    def get_north_coord(self, x: int, y: int) -> tuple[int, int]:
         return (x, y - 1)
 
-    def get_west_coord(self, x, y):
+    def get_west_coord(self, x: int, y: int) -> tuple[int, int]:
         return (x - 1, y)
 
-    def get_east_coord(self, x, y):
+    def get_east_coord(self, x: int, y: int) -> tuple[int, int]:
         return (x + 1, y)
 
-    def get_south_east_coord(self, x, y):
+    def get_south_east_coord(self, x: int, y: int) -> tuple[int, int]:
         return (x + 1, y + 1)
 
-    def get_south_west_coord(self, x, y):
+    def get_south_west_coord(self, x: int, y: int) -> tuple[int, int]:
         return (x - 1, y + 1)
 
-    def get_north_east_coord(self, x, y):
+    def get_north_east_coord(self, x: int, y: int) -> tuple[int, int]:
         return (x + 1, y - 1)
 
-    def get_north_west_coord(self, x, y):
+    def get_north_west_coord(self, x: int, y: int) -> tuple[int, int]:
         return (x - 1, y - 1)
 
-    def list_get_coordinates_functions(self, enable_diag=True):
+    def list_get_coordinates_functions(
+        self, enable_diag=True
+    ) -> list[Callable[[int, int], tuple[int, int]]]:
         functions = [
             self.get_south_coord,
             self.get_north_coord,
@@ -123,16 +139,29 @@ class Grid:
             ]
         return functions
 
+    def get_neighbors_coords(
+        self, x, y, enable_diag=False, in_bound_only=True
+    ) -> list[tuple[int, int]]:
+        coord_funcs = self.list_get_coordinates_functions(enable_diag)
+        coords = [coord_f(x, y) for coord_f in coord_funcs]
+        if in_bound_only:
+            coords = [
+                coord
+                for coord in coords
+                if not self.is_out_of_bounds(coord[0], coord[1])
+            ]
+        return coords
+
     def get_next_n(
         self,
         x: int,
         y: int,
-        get_direction_coord: typing.Callable[[int, int], tuple[int, int]],
+        get_direction_coord: Callable[[int, int], tuple[int, int]],
         n: int | None = None,
     ):
         result = []
         if n is None:
-            n = max(self.width, self.height)
+            n = max(self._width, self._height)
         for _ in range(n):
             x, y = get_direction_coord(x, y)
             if self.is_out_of_bounds(x, y):
@@ -145,7 +174,7 @@ class Grid:
         Get n right values from (x,y)
         """
         if n == -1:
-            n = self.width
+            n = self._width
         result = []
         i = 0
         while i < n and not self.is_x_out_of_bounds(x):
@@ -156,6 +185,6 @@ class Grid:
 
 if __name__ == "__main__":
     # space reserved for testing
-    arr = [1, 2, 23, 4, "adgf", 1, 1, 1]
-    [print(a) for a in arr]
-    print(count_occurences(arr))
+    grid = Grid([[1, 2, 3], [3, 4, 5], [6, 7, 8]])
+    n_coords = grid.get_neighbors_coords(1, 0)
+    print(n_coords)
