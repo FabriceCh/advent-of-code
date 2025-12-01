@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from typing import Callable
 
 
-def read_file(path):
+def read_file(path="input"):
     """
     Basic function to read file content
     """

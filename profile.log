@@ -1,0 +1,1783 @@
+SCRIPT  /Users/rprcz974/.local/share/nvim/lazy/telescope.nvim/ftplugin/TelescopePrompt.lua
+Sourced 1 time
+Total time:   0.000447
+ Self time:   0.000447
+
+count  total (s)   self (s)
+                            -- Don't wrap textwidth things
+                            vim.opt_local.formatoptions:remove "t"
+                            vim.opt_local.formatoptions:remove "c"
+                            
+                            -- Don't include `showbreak` when calculating strdisplaywidth
+                            vim.opt_local.wrap = false
+                            
+                            -- There's also no reason to enable textwidth here anyway
+                            vim.opt_local.textwidth = 0
+                            vim.opt_local.scrollbind = false
+                            
+                            vim.opt_local.signcolumn = "no"
+
+SCRIPT  /Users/rprcz974/.local/share/nvim/lazy/telescope.nvim/ftplugin/TelescopeResults.lua
+Sourced 1 time
+Total time:   0.000328
+ Self time:   0.000328
+
+count  total (s)   self (s)
+                            -- Don't have scrolloff, it makes things weird.
+                            vim.opt_local.scrolloff = 0
+                            vim.opt_local.scrollbind = false
+                            
+                            vim.opt_local.signcolumn = "no"
+
+SCRIPT  /Users/rprcz974/.local/share/nvim/lazy/LuaSnip/plugin/luasnip.lua
+Sourced 1 time
+Total time:   0.011617
+ Self time:   0.011617
+
+count  total (s)   self (s)
+                            vim.filetype.add({
+                            	extension = { snippets = "snippets" },
+                            })
+                            
+                            local function silent_map(mode, lhs, rhs, desc)
+                            	vim.keymap.set(mode, lhs, rhs, { silent = true, desc = desc or "" })
+                            end
+                            
+                            silent_map("i", "<Plug>luasnip-expand-or-jump", function()
+                            	require("luasnip").expand_or_jump()
+                            end, "LuaSnip: Expand or jump in the current snippet")
+                            silent_map("i", "<Plug>luasnip-expand-snippet", function()
+                            	require("luasnip").expand()
+                            end, "LuaSnip: Expand the current snippet")
+                            silent_map("i", "<Plug>luasnip-next-choice", function()
+                            	require("luasnip").change_choice(1)
+                            end, "LuaSnip: Change to the next choice from the choiceNode")
+                            silent_map("i", "<Plug>luasnip-prev-choice", function()
+                            	require("luasnip").change_choice(-1)
+                            end, "LuaSnip: Change to the previous choice from the choiceNode")
+                            silent_map("i", "<Plug>luasnip-jump-next", function()
+                            	require("luasnip").jump(1)
+                            end, "LuaSnip: Jump to the next node")
+                            silent_map("i", "<Plug>luasnip-jump-prev", function()
+                            	require("luasnip").jump(-1)
+                            end, "LuaSnip: Jump to the previous node")
+                            
+                            silent_map("n", "<Plug>luasnip-delete-check", function()
+                            	require("luasnip").unlink_current_if_deleted()
+                            end, "LuaSnip: Removes current snippet from jumplist")
+                            silent_map("!", "<Plug>luasnip-delete-check", function()
+                            	require("luasnip").unlink_current_if_deleted()
+                            end, "LuaSnip: Removes current snippet from jumplist")
+                            
+                            silent_map("", "<Plug>luasnip-expand-repeat", function()
+                            	require("luasnip").expand_repeat()
+                            end, "LuaSnip: Repeat last node expansion")
+                            silent_map("!", "<Plug>luasnip-expand-repeat", function()
+                            	require("luasnip").expand_repeat()
+                            end, "LuaSnip: Repeat last node expansion")
+                            
+                            silent_map("s", "<Plug>luasnip-expand-or-jump", function()
+                            	require("luasnip").expand_or_jump()
+                            end, "LuaSnip: Expand or jump in the current snippet")
+                            silent_map("s", "<Plug>luasnip-expand-snippet", function()
+                            	require("luasnip").expand()
+                            end, "LuaSnip: Expand the current snippet")
+                            silent_map("s", "<Plug>luasnip-next-choice", function()
+                            	require("luasnip").change_choice(1)
+                            end, "LuaSnip: Change to the next choice from the choiceNode")
+                            silent_map("s", "<Plug>luasnip-prev-choice", function()
+                            	require("luasnip").change_choice(-1)
+                            end, "LuaSnip: Change to the previous choice from the choiceNode")
+                            silent_map("s", "<Plug>luasnip-jump-next", function()
+                            	require("luasnip").jump(1)
+                            end, "LuaSnip: Jump to the next node")
+                            silent_map("s", "<Plug>luasnip-jump-prev", function()
+                            	require("luasnip").jump(-1)
+                            end, "LuaSnip: Jump to the previous node")
+                            
+                            vim.api.nvim_create_user_command("LuaSnipUnlinkCurrent", function()
+                            	require("luasnip").unlink_current()
+                            end, { force = true })
+                            
+                            --stylua: ignore
+                            vim.api.nvim_create_user_command("LuaSnipListAvailable", function()
+                            	(require("luasnip.util.vimversion").ge(0,9,0) and vim.print or vim.pretty_print)(require("luasnip").available())
+                            end, { force = true })
+                            
+                            require("luasnip.config")._setup()
+                            
+                            -- register these during startup so lazy_load will also load filetypes whose
+                            -- events fired only before lazy_load is actually called.
+                            -- (BufWinEnter -> lazy_load() wouldn't load any files without these).
+                            vim.api.nvim_create_augroup("_luasnip_lazy_load", {})
+                            vim.api.nvim_create_autocmd({ "BufWinEnter", "FileType" }, {
+                            	callback = function(event)
+                            		require("luasnip.loaders").load_lazy_loaded(tonumber(event.buf))
+                            	end,
+                            	group = "_luasnip_lazy_load",
+                            })
+
+SCRIPT  /Users/rprcz974/.local/share/nvim/lazy/LuaSnip/plugin/luasnip.vim
+Sourced 1 time
+Total time:   0.000021
+ Self time:   0.000021
+
+count  total (s)   self (s)
+    1              0.000004 function! luasnip#expandable()
+                            	return luaeval('require("luasnip").expandable()')
+                            endfunction
+                            
+    1              0.000001 function! luasnip#expand_or_jumpable()
+                            	return luaeval('require("luasnip").expand_or_jumpable()')
+                            endfunction
+                            
+    1              0.000001 function! luasnip#expand_or_locally_jumpable()
+                            	return luaeval('require("luasnip").expand_or_locally_jumpable()')
+                            endfunction
+                            
+    1              0.000001 function! luasnip#locally_jumpable(direction)
+                            	return luaeval('require("luasnip").locally_jumpable(_A)', a:direction)
+                            endfunction
+                            
+    1              0.000001 function! luasnip#jumpable(direction)
+                            	return luaeval('require("luasnip").jumpable(_A)', a:direction)
+                            endfunction
+                            
+    1              0.000000 function! luasnip#choice_active()
+                            	return luaeval('require("luasnip").choice_active()')
+                            endfunction
+
+SCRIPT  /Users/rprcz974/.local/share/nvim/lazy/cmp_luasnip/after/plugin/cmp_luasnip.lua
+Sourced 1 time
+Total time:   0.013781
+ Self time:   0.013779
+
+count  total (s)   self (s)
+                            require("cmp").register_source("luasnip", require("cmp_luasnip").new())
+                            
+                            local cmp_luasnip = vim.api.nvim_create_augroup("cmp_luasnip", {})
+                            
+                            vim.api.nvim_create_autocmd("User", {
+                              pattern = "LuasnipCleanup",
+                              callback = function ()
+                                require("cmp_luasnip").clear_cache()
+                              end,
+                              group = cmp_luasnip
+                            })
+                            
+                            vim.api.nvim_create_autocmd("User", {
+                              pattern = "LuasnipSnippetsAdded",
+                              callback = function ()
+                                require("cmp_luasnip").refresh()
+                              end,
+                              group = cmp_luasnip
+                            })
+
+SCRIPT  /Users/rprcz974/.local/share/nvim/lazy/cmp-path/after/plugin/cmp_path.lua
+Sourced 1 time
+Total time:   0.001074
+ Self time:   0.001073
+
+count  total (s)   self (s)
+                            require('cmp').register_source('path', require('cmp_path').new())
+
+SCRIPT  /Users/rprcz974/.local/share/nvim/lazy/nvim-cmp/plugin/cmp.lua
+Sourced 1 time
+Total time:   0.000933
+ Self time:   0.000929
+
+count  total (s)   self (s)
+    1              0.000003 if vim.g.loaded_cmp then
+                              return
+                            end
+                            vim.g.loaded_cmp = true
+                            
+                            if not vim.api.nvim_create_autocmd then
+                              return print('[nvim-cmp] Your nvim does not has `nvim_create_autocmd` function. Please update to latest nvim.')
+                            end
+                            
+                            local api = require('cmp.utils.api')
+                            local types = require('cmp.types')
+                            local highlight = require('cmp.utils.highlight')
+                            local autocmd = require('cmp.utils.autocmd')
+                            
+                            vim.api.nvim_set_hl(0, 'CmpItemAbbr', { link = 'CmpItemAbbrDefault', default = true })
+                            vim.api.nvim_set_hl(0, 'CmpItemAbbrDeprecated', { link = 'CmpItemAbbrDeprecatedDefault', default = true })
+                            vim.api.nvim_set_hl(0, 'CmpItemAbbrMatch', { link = 'CmpItemAbbrMatchDefault', default = true })
+                            vim.api.nvim_set_hl(0, 'CmpItemAbbrMatchFuzzy', { link = 'CmpItemAbbrMatchFuzzyDefault', default = true })
+                            vim.api.nvim_set_hl(0, 'CmpItemKind', { link = 'CmpItemKindDefault', default = true })
+                            vim.api.nvim_set_hl(0, 'CmpItemMenu', { link = 'CmpItemMenuDefault', default = true })
+                            for kind in pairs(types.lsp.CompletionItemKind) do
+                              if type(kind) == 'string' then
+                                local name = ('CmpItemKind%s'):format(kind)
+                                vim.api.nvim_set_hl(0, name, { link = ('%sDefault'):format(name), default = true })
+                              end
+                            end
+                            
+                            autocmd.subscribe({ 'ColorScheme', 'UIEnter' }, function()
+                              highlight.inherit('CmpItemAbbrDefault', 'Pmenu', { bg = 'NONE', default = false })
+                              highlight.inherit('CmpItemAbbrDeprecatedDefault', 'Comment', { bg = 'NONE', default = false })
+                              highlight.inherit('CmpItemAbbrMatchDefault', 'Pmenu', { bg = 'NONE', default = false })
+                              highlight.inherit('CmpItemAbbrMatchFuzzyDefault', 'Pmenu', { bg = 'NONE', default = false })
+                              highlight.inherit('CmpItemKindDefault', 'Special', { bg = 'NONE', default = false })
+                              highlight.inherit('CmpItemMenuDefault', 'Pmenu', { bg = 'NONE', default = false })
+                              for name in pairs(types.lsp.CompletionItemKind) do
+                                if type(name) == 'string' then
+                                  vim.api.nvim_set_hl(0, ('CmpItemKind%sDefault'):format(name), { link = 'CmpItemKind', default = false })
+                                end
+                              end
+                            end)
+                            autocmd.emit('ColorScheme')
+                            
+                            if vim.on_key then
+                              local control_c_termcode = vim.api.nvim_replace_termcodes('<C-c>', true, true, true)
+                              vim.on_key(function(keys)
+                                if keys == control_c_termcode then
+                                  vim.schedule(function()
+                                    if not api.is_suitable_mode() then
+                                      autocmd.emit('InsertLeave')
+                                    end
+                                  end)
+                                end
+                              end, vim.api.nvim_create_namespace('cmp.plugin'))
+                            end
+                            
+                            
+                            vim.api.nvim_create_user_command('CmpStatus', function()
+                              require('cmp').status()
+                            end, { desc = 'Check status of cmp sources' })
+                            
+                            vim.cmd([[doautocmd <nomodeline> User CmpReady]])
+
+SCRIPT  /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/ftplugin/python.vim
+Sourced 1 time
+Total time:   3.110282
+ Self time:   0.000938
+
+count  total (s)   self (s)
+                            " Vim filetype plugin file
+                            " Language:	python
+                            " Maintainer:	Tom Picton <tom@tompicton.com>
+                            " Previous Maintainer: James Sully <sullyj3@gmail.com>
+                            " Previous Maintainer: Johannes Zellner <johannes@zellner.org>
+                            " Repository: https://github.com/tpict/vim-ftplugin-python
+                            " Last Change: 2024/05/13
+                            "              2024 Nov 30 use pytest compiler (#16130)
+                            
+    1              0.000005 if exists("b:did_ftplugin") | finish | endif
+    1              0.000002 let b:did_ftplugin = 1
+    1              0.000002 let s:keepcpo= &cpo
+    1              0.000005 set cpo&vim
+                            
+    1              0.000005 setlocal cinkeys-=0#
+    1              0.000004 setlocal indentkeys-=0#
+    1              0.000003 setlocal include=^\\s*\\(from\\\|import\\)
+    1              0.000003 setlocal define=^\\s*\\(\\(async\\s\\+\\)\\?def\\\|class\\)
+                            
+                            " For imports with leading .., append / and replace additional .s with ../
+    1              0.000002 let b:grandparent_match = '^\(.\.\)\(\.*\)'
+    1              0.000002 let b:grandparent_sub = '\=submatch(1)."/".repeat("../",strlen(submatch(2)))'
+                            
+                            " For imports with a single leading ., replace it with ./
+    1              0.000001 let b:parent_match = '^\.\(\.\)\@!'
+    1              0.000001 let b:parent_sub = './'
+                            
+                            " Replace any . sandwiched between word characters with /
+    1              0.000001 let b:child_match = '\(\w\)\.\(\w\)'
+    1              0.000001 let b:child_sub = '\1/\2'
+                            
+    1              0.000008 setlocal includeexpr=substitute(substitute(substitute(
+                                  \v:fname,
+                                  \b:grandparent_match,b:grandparent_sub,''),
+                                  \b:parent_match,b:parent_sub,''),
+                                  \b:child_match,b:child_sub,'g')
+                            
+    1              0.000002 setlocal suffixesadd=.py
+    1              0.000003 setlocal comments=b:#,fb:-
+    1              0.000002 setlocal commentstring=#\ %s
+                            
+    1   3.109955   0.000612 if has('python3')
+                              setlocal omnifunc=python3complete#Complete
+    1              0.000003 elseif has('python')
+                              setlocal omnifunc=pythoncomplete#Complete
+    1              0.000000 endif
+                            
+    1              0.000007 set wildignore+=*.pyc
+                            
+    1              0.000001 let b:next_toplevel='\v%$\|^(class\|def\|async def)>'
+    1              0.000001 let b:prev_toplevel='\v^(class\|def\|async def)>'
+    1              0.000001 let b:next_endtoplevel='\v%$\|\S.*\n+(def\|class)'
+    1              0.000001 let b:prev_endtoplevel='\v\S.*\n+(def\|class)'
+    1              0.000001 let b:next='\v%$\|^\s*(class\|def\|async def)>'
+    1              0.000001 let b:prev='\v^\s*(class\|def\|async def)>'
+    1              0.000002 let b:next_end='\v\S\n*(%$\|^(\s*\n*)*(class\|def\|async def)\|^\S)'
+    1              0.000001 let b:prev_end='\v\S\n*(^(\s*\n*)*(class\|def\|async def)\|^\S)'
+                            
+    1              0.000003 if !exists('g:no_plugin_maps') && !exists('g:no_python_maps')
+    1              0.000012     execute "nnoremap <silent> <buffer> ]] :<C-U>call <SID>Python_jump('n', '". b:next_toplevel."', 'W', v:count1)<cr>"
+    1              0.000005     execute "nnoremap <silent> <buffer> [[ :<C-U>call <SID>Python_jump('n', '". b:prev_toplevel."', 'Wb', v:count1)<cr>"
+    1              0.000004     execute "nnoremap <silent> <buffer> ][ :<C-U>call <SID>Python_jump('n', '". b:next_endtoplevel."', 'W', v:count1, 0)<cr>"
+    1              0.000004     execute "nnoremap <silent> <buffer> [] :<C-U>call <SID>Python_jump('n', '". b:prev_endtoplevel."', 'Wb', v:count1, 0)<cr>"
+    1              0.000004     execute "nnoremap <silent> <buffer> ]m :<C-U>call <SID>Python_jump('n', '". b:next."', 'W', v:count1)<cr>"
+    1              0.000004     execute "nnoremap <silent> <buffer> [m :<C-U>call <SID>Python_jump('n', '". b:prev."', 'Wb', v:count1)<cr>"
+    1              0.000005     execute "nnoremap <silent> <buffer> ]M :<C-U>call <SID>Python_jump('n', '". b:next_end."', 'W', v:count1, 0)<cr>"
+    1              0.000004     execute "nnoremap <silent> <buffer> [M :<C-U>call <SID>Python_jump('n', '". b:prev_end."', 'Wb', v:count1, 0)<cr>"
+                            
+    1              0.000004     execute "onoremap <silent> <buffer> ]] :call <SID>Python_jump('o', '". b:next_toplevel."', 'W', v:count1)<cr>"
+    1              0.000004     execute "onoremap <silent> <buffer> [[ :call <SID>Python_jump('o', '". b:prev_toplevel."', 'Wb', v:count1)<cr>"
+    1              0.000004     execute "onoremap <silent> <buffer> ][ :call <SID>Python_jump('o', '". b:next_endtoplevel."', 'W', v:count1, 0)<cr>"
+    1              0.000003     execute "onoremap <silent> <buffer> [] :call <SID>Python_jump('o', '". b:prev_endtoplevel."', 'Wb', v:count1, 0)<cr>"
+    1              0.000004     execute "onoremap <silent> <buffer> ]m :call <SID>Python_jump('o', '". b:next."', 'W', v:count1)<cr>"
+    1              0.000004     execute "onoremap <silent> <buffer> [m :call <SID>Python_jump('o', '". b:prev."', 'Wb', v:count1)<cr>"
+    1              0.000004     execute "onoremap <silent> <buffer> ]M :call <SID>Python_jump('o', '". b:next_end."', 'W', v:count1, 0)<cr>"
+    1              0.000004     execute "onoremap <silent> <buffer> [M :call <SID>Python_jump('o', '". b:prev_end."', 'Wb', v:count1, 0)<cr>"
+                            
+    1              0.000004     execute "xnoremap <silent> <buffer> ]] :call <SID>Python_jump('x', '". b:next_toplevel."', 'W', v:count1)<cr>"
+    1              0.000006     execute "xnoremap <silent> <buffer> [[ :call <SID>Python_jump('x', '". b:prev_toplevel."', 'Wb', v:count1)<cr>"
+    1              0.000004     execute "xnoremap <silent> <buffer> ][ :call <SID>Python_jump('x', '". b:next_endtoplevel."', 'W', v:count1, 0)<cr>"
+    1              0.000003     execute "xnoremap <silent> <buffer> [] :call <SID>Python_jump('x', '". b:prev_endtoplevel."', 'Wb', v:count1, 0)<cr>"
+    1              0.000004     execute "xnoremap <silent> <buffer> ]m :call <SID>Python_jump('x', '". b:next."', 'W', v:count1)<cr>"
+    1              0.000003     execute "xnoremap <silent> <buffer> [m :call <SID>Python_jump('x', '". b:prev."', 'Wb', v:count1)<cr>"
+    1              0.000004     execute "xnoremap <silent> <buffer> ]M :call <SID>Python_jump('x', '". b:next_end."', 'W', v:count1, 0)<cr>"
+    1              0.000004     execute "xnoremap <silent> <buffer> [M :call <SID>Python_jump('x', '". b:prev_end."', 'Wb', v:count1, 0)<cr>"
+    1              0.000000 endif
+                            
+    1              0.000002 if !exists('*<SID>Python_jump')
+    1              0.000001   fun! <SID>Python_jump(mode, motion, flags, count, ...) range
+                                  let l:startofline = (a:0 >= 1) ? a:1 : 1
+                            
+                                  if a:mode == 'x'
+                                      normal! gv
+                                  endif
+                            
+                                  if l:startofline == 1
+                                      normal! 0
+                                  endif
+                            
+                                  let cnt = a:count
+                                  mark '
+                                  while cnt > 0
+                                      call search(a:motion, a:flags)
+                                      let cnt = cnt - 1
+                                  endwhile
+                            
+                                  if l:startofline == 1
+                                      normal! ^
+                                  endif
+                              endfun
+    1              0.000000 endif
+                            
+    1              0.000002 if has("browsefilter") && !exists("b:browsefilter")
+    1              0.000001     let b:browsefilter = "Python Files (*.py)\t*.py\n"
+    1              0.000001     if has("win32")
+                            	let b:browsefilter .= "All Files (*.*)\t*\n"
+    1              0.000000     else
+    1              0.000009 	let b:browsefilter .= "All Files (*)\t*\n"
+    1              0.000000     endif
+    1              0.000000 endif
+                            
+    1              0.000002 if !exists("g:python_recommended_style") || g:python_recommended_style != 0
+                                " As suggested by PEP8.
+    1              0.000007     setlocal expandtab tabstop=4 softtabstop=4 shiftwidth=4
+    1              0.000000 endif
+                            
+                            " Use pydoc for keywordprg.
+                            " Unix users preferentially get pydoc3, then pydoc2.
+                            " Windows doesn't have a standalone pydoc executable in $PATH by default, nor
+                            " does it have separate python2/3 executables, so Windows users just get
+                            " whichever version corresponds to their installed Python version.
+    1              0.000043 if executable('python3')
+    1              0.000003   setlocal keywordprg=python3\ -m\ pydoc
+                            elseif executable('python')
+                              setlocal keywordprg=python\ -m\ pydoc
+    1              0.000000 endif
+                            
+    1              0.000007 if expand('%:t') =~# '\v^test_.*\.py$|_test\.py$' && executable('pytest')
+                              compiler pytest
+                              let &l:makeprg .= ' %:S'
+    1              0.000000 endif
+                            
+                            " Script for filetype switching to undo the local stuff we may have changed
+    1              0.000030 let b:undo_ftplugin = 'setlocal cinkeys<'
+                                  \ . '|setlocal comments<'
+                                  \ . '|setlocal commentstring<'
+                                  \ . '|setlocal expandtab<'
+                                  \ . '|setlocal include<'
+                                  \ . '|setlocal includeexpr<'
+                                  \ . '|setlocal indentkeys<'
+                                  \ . '|setlocal keywordprg<'
+                                  \ . '|setlocal omnifunc<'
+                                  \ . '|setlocal shiftwidth<'
+                                  \ . '|setlocal softtabstop<'
+                                  \ . '|setlocal suffixesadd<'
+                                  \ . '|setlocal tabstop<'
+                                  \ . '|setlocal makeprg<'
+                                  \ . '|silent! nunmap <buffer> [M'
+                                  \ . '|silent! nunmap <buffer> [['
+                                  \ . '|silent! nunmap <buffer> []'
+                                  \ . '|silent! nunmap <buffer> [m'
+                                  \ . '|silent! nunmap <buffer> ]M'
+                                  \ . '|silent! nunmap <buffer> ]['
+                                  \ . '|silent! nunmap <buffer> ]]'
+                                  \ . '|silent! nunmap <buffer> ]m'
+                                  \ . '|silent! ounmap <buffer> [M'
+                                  \ . '|silent! ounmap <buffer> [['
+                                  \ . '|silent! ounmap <buffer> []'
+                                  \ . '|silent! ounmap <buffer> [m'
+                                  \ . '|silent! ounmap <buffer> ]M'
+                                  \ . '|silent! ounmap <buffer> ]['
+                                  \ . '|silent! ounmap <buffer> ]]'
+                                  \ . '|silent! ounmap <buffer> ]m'
+                                  \ . '|silent! xunmap <buffer> [M'
+                                  \ . '|silent! xunmap <buffer> [['
+                                  \ . '|silent! xunmap <buffer> []'
+                                  \ . '|silent! xunmap <buffer> [m'
+                                  \ . '|silent! xunmap <buffer> ]M'
+                                  \ . '|silent! xunmap <buffer> ]['
+                                  \ . '|silent! xunmap <buffer> ]]'
+                                  \ . '|silent! xunmap <buffer> ]m'
+                                  \ . '|unlet! b:browsefilter'
+                                  \ . '|unlet! b:child_match'
+                                  \ . '|unlet! b:child_sub'
+                                  \ . '|unlet! b:grandparent_match'
+                                  \ . '|unlet! b:grandparent_sub'
+                                  \ . '|unlet! b:next'
+                                  \ . '|unlet! b:next_end'
+                                  \ . '|unlet! b:next_endtoplevel'
+                                  \ . '|unlet! b:next_toplevel'
+                                  \ . '|unlet! b:parent_match'
+                                  \ . '|unlet! b:parent_sub'
+                                  \ . '|unlet! b:prev'
+                                  \ . '|unlet! b:prev_end'
+                                  \ . '|unlet! b:prev_endtoplevel'
+                                  \ . '|unlet! b:prev_toplevel'
+                                  \ . '|unlet! b:undo_ftplugin'
+                            
+    1              0.000005 let &cpo = s:keepcpo
+    1              0.000002 unlet s:keepcpo
+
+SCRIPT  /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/autoload/provider/python3.vim
+Sourced 1 time
+Total time:   3.109335
+ Self time:   3.109136
+
+count  total (s)   self (s)
+    1              0.000003 if exists('g:loaded_python3_provider')
+                              finish
+    1              0.000001 endif
+                            
+    1              0.000004 function! provider#python3#Call(method, args) abort
+                              return v:lua.vim.provider.python.call(a:method, a:args)
+                            endfunction
+                            
+    1              0.000001 function! provider#python3#Require(host) abort
+                              return v:lua.vim.provider.python.require(a:host)
+                            endfunction
+                            
+    1              3.108166 let s:prog = v:lua.vim.provider.python.detect_by_module('neovim')
+    1              0.000011 let g:loaded_python3_provider = empty(s:prog) ? 0 : 2
+    1   0.001137   0.000937 call v:lua.require'vim.provider.python'.start()
+
+SCRIPT  /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/autoload/remote/host.vim
+Sourced 1 time
+Total time:   0.000145
+ Self time:   0.000119
+
+count  total (s)   self (s)
+    1              0.000004 let s:hosts = {}
+    1              0.000001 let s:plugin_patterns = {}
+    1              0.000001 let s:plugins_for_host = {}
+                            
+                            " Register a host by associating it with a factory(funcref)
+    1              0.000005 function! remote#host#Register(name, pattern, factory) abort
+                              let s:hosts[a:name] = {'factory': a:factory, 'channel': 0, 'initialized': 0}
+                              let s:plugin_patterns[a:name] = a:pattern
+                              if type(a:factory) == type(1) && a:factory
+                                " Passed a channel directly
+                                let s:hosts[a:name].channel = a:factory
+                              endif
+                            endfunction
+                            
+                            " Register a clone to an existing host. The new host will use the same factory
+                            " as `source`, but it will run as a different process. This can be used by
+                            " plugins that should run isolated from other plugins created for the same host
+                            " type
+    1              0.000001 function! remote#host#RegisterClone(name, orig_name) abort
+                              if !has_key(s:hosts, a:orig_name)
+                                throw 'No host named "'.a:orig_name.'" is registered'
+                              endif
+                              let Factory = s:hosts[a:orig_name].factory
+                              let s:hosts[a:name] = {
+                                    \ 'factory': Factory,
+                                    \ 'channel': 0,
+                                    \ 'initialized': 0,
+                                    \ 'orig_name': a:orig_name
+                                    \ }
+                            endfunction
+                            
+                            " Get a host channel, bootstrapping it if necessary
+    1              0.000001 function! remote#host#Require(name) abort
+                              if !has_key(s:hosts, a:name)
+                                throw 'No host named "'.a:name.'" is registered'
+                              endif
+                              let host = s:hosts[a:name]
+                              if !host.channel && !host.initialized
+                                let host_info = {
+                                      \ 'name': a:name,
+                                      \ 'orig_name': get(host, 'orig_name', a:name)
+                                      \ }
+                                let host.channel = call(host.factory, [host_info])
+                                let host.initialized = 1
+                              endif
+                              return host.channel
+                            endfunction
+                            
+    1              0.000001 function! remote#host#IsRunning(name) abort
+                              if !has_key(s:hosts, a:name)
+                                throw 'No host named "'.a:name.'" is registered'
+                              endif
+                              return s:hosts[a:name].channel != 0
+                            endfunction
+                            
+                            " Example of registering a Python plugin with two commands (one async), one
+                            " autocmd (async) and one function (sync):
+                            "
+                            " let s:plugin_path = expand('<sfile>:p:h').'/nvim_plugin.py'
+                            " call remote#host#RegisterPlugin('python', s:plugin_path, [
+                            "   \ {'type': 'command', 'name': 'PyCmd', 'sync': 1, 'opts': {}},
+                            "   \ {'type': 'command', 'name': 'PyAsyncCmd', 'sync': 0, 'opts': {'eval': 'cursor()'}},
+                            "   \ {'type': 'autocmd', 'name': 'BufEnter', 'sync': 0, 'opts': {'eval': 'expand("<afile>")'}},
+                            "   \ {'type': 'function', 'name': 'PyFunc', 'sync': 1, 'opts': {}}
+                            "   \ ])
+                            "
+                            " The third item in a declaration is a boolean: non zero means the command,
+                            " autocommand or function will be executed synchronously with rpcrequest.
+    1              0.000001 function! remote#host#RegisterPlugin(host, path, specs) abort
+                              let plugins = remote#host#PluginsForHost(a:host)
+                            
+                              for plugin in plugins
+                                if plugin.path == a:path
+                                  throw 'Plugin "'.a:path.'" is already registered'
+                                endif
+                              endfor
+                            
+                              if has_key(s:hosts, a:host) && remote#host#IsRunning(a:host)
+                                " For now we won't allow registration of plugins when the host is already
+                                " running.
+                                throw 'Host "'.a:host.'" is already running'
+                              endif
+                            
+                              for spec in a:specs
+                                let type = spec.type
+                                let name = spec.name
+                                let sync = spec.sync
+                                let opts = spec.opts
+                                let rpc_method = a:path
+                                if type == 'command'
+                                  let rpc_method .= ':command:'.name
+                                  call remote#define#CommandOnHost(a:host, rpc_method, sync, name, opts)
+                                elseif type == 'autocmd'
+                                  " Since multiple handlers can be attached to the same autocmd event by a
+                                  " single plugin, we need a way to uniquely identify the rpc method to
+                                  " call.  The solution is to append the autocmd pattern to the method
+                                  " name(This still has a limit: one handler per event/pattern combo, but
+                                  " there's no need to allow plugins define multiple handlers in that case)
+                                  let rpc_method .= ':autocmd:'.name.':'.get(opts, 'pattern', '*')
+                                  call remote#define#AutocmdOnHost(a:host, rpc_method, sync, name, opts)
+                                elseif type == 'function'
+                                  let rpc_method .= ':function:'.name
+                                  call remote#define#FunctionOnHost(a:host, rpc_method, sync, name, opts)
+                                else
+                                  echoerr 'Invalid declaration type: '.type
+                                endif
+                              endfor
+                            
+                              call add(plugins, {'path': a:path, 'specs': a:specs})
+                            endfunction
+                            
+    1              0.000001 function! s:RegistrationCommands(host) abort
+                              " Register a temporary host clone for discovering specs
+                              let host_id = a:host.'-registration-clone'
+                              call remote#host#RegisterClone(host_id, a:host)
+                              let pattern = s:plugin_patterns[a:host]
+                              let paths = nvim_get_runtime_file('rplugin/'.a:host.'/'.pattern, 1)
+                              let paths = map(paths, 'tr(resolve(v:val),"\\","/")') " Normalize slashes #4795
+                              let paths = uniq(sort(paths))
+                              if empty(paths)
+                                return []
+                              endif
+                            
+                              for path in paths
+                                call remote#host#RegisterPlugin(host_id, path, [])
+                              endfor
+                              let channel = remote#host#Require(host_id)
+                              let lines = []
+                              let registered = []
+                              for path in paths
+                                unlet! specs
+                                let specs = rpcrequest(channel, 'specs', path)
+                                if type(specs) != type([])
+                                  " host didn't return a spec list, indicates a failure while loading a
+                                  " plugin
+                                  continue
+                                endif
+                                call add(lines, "call remote#host#RegisterPlugin('".a:host
+                                      \ ."', '".path."', [")
+                                for spec in specs
+                                  call add(lines, "      \\ ".string(spec).",")
+                                endfor
+                                call add(lines, "     \\ ])")
+                                call add(registered, path)
+                              endfor
+                              echomsg printf("remote/host: %s host registered plugins %s",
+                                    \ a:host, string(map(registered, "fnamemodify(v:val, ':t')")))
+                            
+                              " Delete the temporary host clone
+                              call jobstop(s:hosts[host_id].channel)
+                              call remove(s:hosts, host_id)
+                              call remove(s:plugins_for_host, host_id)
+                              return lines
+                            endfunction
+                            
+    1              0.000001 function! remote#host#UpdateRemotePlugins() abort
+                              let commands = []
+                              let hosts = keys(s:hosts)
+                              for host in hosts
+                                if has_key(s:plugin_patterns, host)
+                                  try
+                                    let commands +=
+                                          \   ['" '.host.' plugins']
+                                          \ + s:RegistrationCommands(host)
+                                          \ + ['', '']
+                                  catch
+                                    echomsg v:throwpoint
+                                    echomsg v:exception
+                                  endtry
+                                endif
+                              endfor
+                              call writefile(commands, g:loaded_remote_plugins)
+                              echomsg printf('remote/host: generated rplugin manifest: %s',
+                                    \ g:loaded_remote_plugins)
+                            endfunction
+                            
+    1              0.000001 function! remote#host#PluginsForHost(host) abort
+                              if !has_key(s:plugins_for_host, a:host)
+                                let s:plugins_for_host[a:host] = []
+                              end
+                              return s:plugins_for_host[a:host]
+                            endfunction
+                            
+    1              0.000001 function! remote#host#LoadErrorForHost(host, log) abort
+                              return 'Failed to load '. a:host . ' host. '.
+                                    \ 'You can try to see what happened by starting nvim with '.
+                                    \ a:log . ' set and opening the generated log file.'.
+                                    \ ' Also, the host stderr is available in messages.'
+                            endfunction
+                            
+                            " Registration of standard hosts
+                            
+                            " Python3
+    1   0.000021   0.000009 call remote#host#Register('python3', '*',
+                                  \ function('provider#python3#Require'))
+                            
+                            " Ruby
+    1   0.000010   0.000004 call remote#host#Register('ruby', '*.rb',
+                                  \ function('provider#ruby#Require'))
+                            
+                            " nodejs
+    1   0.000008   0.000004 call remote#host#Register('node', '*',
+                                  \ function('provider#node#Require'))
+                            
+                            " perl
+    1   0.000009   0.000004 call remote#host#Register('perl', '*',
+                                  \ function('provider#perl#Require'))
+
+SCRIPT  /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/indent/python.vim
+Sourced 1 time
+Total time:   0.000046
+ Self time:   0.000046
+
+count  total (s)   self (s)
+                            " Vim indent file
+                            " Language:	Python
+                            " Maintainer:	The Vim Project <https://github.com/vim/vim>
+                            " Last Change:	2023 Aug 10
+                            " Former Maintainer:	Bram Moolenaar <Bram@vim.org>
+                            " Original Author:	David Bustos <bustos@caltech.edu>
+                            
+                            " Only load this indent file when no other was loaded.
+    1              0.000002 if exists("b:did_indent")
+                              finish
+    1              0.000000 endif
+    1              0.000001 let b:did_indent = 1
+                            
+                            " Some preliminary settings
+    1              0.000006 setlocal nolisp		" Make sure lisp indenting doesn't supersede us
+    1              0.000001 setlocal autoindent	" indentexpr isn't much help otherwise
+                            
+    1              0.000002 setlocal indentexpr=python#GetIndent(v:lnum)
+    1              0.000002 setlocal indentkeys+=<:>,=elif,=except
+                            
+    1              0.000001 let b:undo_indent = "setl ai< inde< indk< lisp<"
+                            
+                            " Only define the function once.
+    1              0.000001 if exists("*GetPythonIndent")
+                              finish
+    1              0.000000 endif
+                            
+                            " Keep this for backward compatibility, new scripts should use
+                            " python#GetIndent()
+    1              0.000001 function GetPythonIndent(lnum)
+                              return python#GetIndent(a:lnum)
+                            endfunction
+                            
+                            " vim:sw=2
+
+FUNCTION  remote#host#RegisterClone()
+    Defined: /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/autoload/remote/host.vim:19
+Called 1 time
+Total time:   0.000010
+ Self time:   0.000010
+
+count  total (s)   self (s)
+    1              0.000002   if !has_key(s:hosts, a:orig_name)
+                                throw 'No host named "'.a:orig_name.'" is registered'
+    1              0.000000   endif
+    1              0.000003   let Factory = s:hosts[a:orig_name].factory
+    1              0.000003   let s:hosts[a:name] = { 'factory': Factory, 'channel': 0, 'initialized': 0, 'orig_name': a:orig_name }
+
+FUNCTION  <SNR>20_ParseOptions()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:166
+Called 10 times
+Total time:   0.000064
+ Self time:   0.000064
+
+count  total (s)   self (s)
+   10              0.000006   for option in a:declarations
+                                if has_key(s:modeline_booleans, matchstr(option, '^\%(no\)\=\zs\w\+$'))
+                                  let a:into[s:modeline_booleans[matchstr(option, '^\%(no\)\=\zs\w\+')]] = [option !~# '^no'] + a:000
+                                elseif has_key(s:modeline_numbers, matchstr(option, '^\w\+\ze=[1-9]\d*$'))
+                                  let a:into[s:modeline_numbers[matchstr(option, '^\w\+')]] = [str2nr(matchstr(option, '\d\+$'))] + a:000
+                                elseif option =~# '^\%(ft\|filetype\)=[[:alnum:]._-]*$'
+                                  let a:into.filetype = [matchstr(option, '=\zs.*')] + a:000
+                                endif
+                                if option ==# 'nomodeline' || option ==# 'noml'
+                                  return 1
+                                endif
+   10              0.000003   endfor
+   10              0.000003   return 0
+
+FUNCTION  <SNR>20_UserOptions()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:460
+Called 1 time
+Total time:   0.000006
+ Self time:   0.000006
+
+count  total (s)   self (s)
+    1              0.000001   if exists('b:sleuth_' . a:name)
+                                let source = 'b:sleuth_' . a:name
+    1              0.000002   elseif exists('g:sleuth_' . a:ft . '_' . a:name)
+                                let source = 'g:sleuth_' . a:ft . '_' . a:name
+    1              0.000000   endif
+    1              0.000001   if !exists('l:source') || type(eval(source)) == type(function('tr'))
+    1              0.000000     return {}
+                              endif
+                              let val = eval(source)
+                              let options = {}
+                              if type(val) == type('')
+                                call s:ParseOptions(split(substitute(val, '\S\@<![=+]\S\@=', 'ft=', 'g'), '[[:space:]:,]\+'), options, source)
+                                if has_key(options, 'filetype')
+                                  call extend(options, s:UserOptions(remove(options, 'filetype')[0], a:name), 'keep')
+                                endif
+                                if has_key(options, 'tabstop')
+                                  call extend(options, {'shiftwidth': [0, source], 'expandtab': [0, source]}, 'keep')
+                                elseif has_key(options, 'shiftwidth')
+                                  call extend(options, {'expandtab': [1, source]}, 'keep')
+                                endif
+                              elseif type(val) == type([])
+                                call s:ParseOptions(val, options, source)
+                              endif
+                              call filter(options, 'index(s:safe_options, v:key) >= 0')
+                              return options
+
+FUNCTION  remote#host#Register()
+    Defined: /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/autoload/remote/host.vim:6
+Called 4 times
+Total time:   0.000025
+ Self time:   0.000025
+
+count  total (s)   self (s)
+    4              0.000009   let s:hosts[a:name] = {'factory': a:factory, 'channel': 0, 'initialized': 0}
+    4              0.000004   let s:plugin_patterns[a:name] = a:pattern
+    4              0.000006   if type(a:factory) == type(1) && a:factory
+                                " Passed a channel directly
+                                let s:hosts[a:name].channel = a:factory
+    4              0.000001   endif
+
+FUNCTION  <SNR>20_ModelineOptions()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:182
+Called 1 time
+Total time:   0.000201
+ Self time:   0.000137
+
+count  total (s)   self (s)
+    1              0.000000   let options = {}
+    1              0.000002   if !&l:modeline && (&g:modeline || s:Capture('setlocal') =~# '\\\@<![[:space:]]nomodeline\>' && s:Capture('verbose setglobal modeline?') !=# s:Capture('verbose setlocal modeline?'))
+                                return options
+    1              0.000000   endif
+    1              0.000002   let modelines = get(b:, 'sleuth_modelines', get(g:, 'sleuth_modelines', 5))
+    1              0.000001   if line('$') > 2 * modelines
+    1              0.000003     let lnums = range(1, modelines) + range(line('$') - modelines + 1, line('$'))
+                              else
+                                let lnums = range(1, line('$'))
+    1              0.000000   endif
+   11              0.000004   for lnum in lnums
+   10   0.000179   0.000115     if s:ParseOptions(split(matchstr(getline(lnum), '\%(\S\@<!vim\=\|\s\@<=ex\):\s*\(set\= \zs[^:]\+\|\zs.*\S\)'), '[[:space:]:]\+'), options, 'modeline', lnum)
+                                  break
+   10              0.000001     endif
+   11              0.000002   endfor
+    1              0.000000   return options
+
+FUNCTION  <SNR>20_Guess()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:38
+Called 1 time
+Total time:   0.002384
+ Self time:   0.002384
+
+count  total (s)   self (s)
+    1              0.000007   let has_heredocs = a:detected.filetype =~# '^\%(perl\|php\|ruby\|[cz]\=sh\|bash\)$'
+    1              0.000001   let options = {}
+    1              0.000002   let heuristics = {'spaces': 0, 'hard': 0, 'soft': 0, 'checked': 0, 'indents': {}}
+    1              0.000002   let tabstop = get(a:detected.options, 'tabstop', get(a:detected.defaults, 'tabstop', [8]))[0]
+    1              0.000001   let softtab = repeat(' ', tabstop)
+    1              0.000000   let waiting_on = ''
+    1              0.000001   let prev_indent = -1
+    1              0.000000   let prev_line = ''
+                            
+   94              0.000026   for line in a:lines
+   93              0.000037     if len(waiting_on)
+                                  if line =~# waiting_on
+                                    let waiting_on = ''
+                                    let prev_indent = -1
+                                    let prev_line = ''
+                                  endif
+                                  continue
+   93              0.000098     elseif line =~# '^\s*$'
+    8              0.000002       continue
+   85              0.000113     elseif a:detected.filetype ==# 'python' && prev_line[-1:-1] =~# '[[\({]'
+    4              0.000001       let prev_indent = -1
+    4              0.000001       let prev_line = ''
+    4              0.000001       continue
+   81              0.000065     elseif line =~# '^=\w' && line !~# '^=\%(end\|cut\)\>'
+                                  let waiting_on = '^=\%(end\|cut\)\>'
+   81              0.000083     elseif line =~# '^@@\+ -\d\+,\d\+ '
+                                  let waiting_on = '^$'
+   81              0.000104     elseif line !~# '[/<"`]'
+                                  " No need to do other checks
+   13              0.000014     elseif line =~# '^\s*/\*' && line !~# '\*/'
+                                  let waiting_on = '\*/'
+   13              0.000014     elseif line =~# '^\s*<\!--' && line !~# '-->'
+                                  let waiting_on = '-->'
+   13              0.000017     elseif line =~# '^[^"]*"""'
+                                  let waiting_on = '^[^"]*"""'
+   13              0.000007     elseif a:detected.filetype ==# 'go' && line =~# '^[^`]*`[^`]*$'
+                                  let waiting_on = '^[^`]*`[^`]*$'
+   13              0.000003     elseif has_heredocs
+                                  let waiting_on = matchstr(line, '<<\s*\([''"]\=\)\zs\w\+\ze\1[^''"`<>]*$')
+                                  if len(waiting_on)
+                                    let waiting_on = '^' . waiting_on . '$'
+                                  endif
+   81              0.000010     endif
+                            
+   81              0.000175     let indent = len(matchstr(substitute(line, '\t', softtab, 'g'), '^ *'))
+   81              0.000045     if line =~# '^\t'
+                                  let heuristics.hard += 1
+   81              0.000090     elseif line =~# '^' . softtab
+   35              0.000013       let heuristics.soft += 1
+   81              0.000010     endif
+   81              0.000062     if line =~# '^  '
+   60              0.000023       let heuristics.spaces += 1
+   81              0.000009     endif
+   81              0.000055     let increment = prev_indent < 0 ? 0 : indent - prev_indent
+   81              0.000029     let prev_indent = indent
+   81              0.000030     let prev_line = line
+   81              0.000047     if increment > 1 && (increment < 4 || increment % 4 == 0)
+   18              0.000012       if has_key(heuristics.indents, increment)
+   17              0.000010         let heuristics.indents[increment] += 1
+    1              0.000000       else
+    1              0.000001         let heuristics.indents[increment] = 1
+   18              0.000003       endif
+   18              0.000007       let heuristics.checked += 1
+   81              0.000010     endif
+   81              0.000093     if heuristics.checked >= 32 && (heuristics.hard > 3 || heuristics.soft > 3) && get(heuristics.indents, increment) * 2 > heuristics.checked
+                                  if heuristics.spaces
+                                    break
+                                  elseif !exists('no_space_indent')
+                                    let no_space_indent = stridx("\n" . join(a:lines, "\n"), "\n  ") < 0
+                                    if no_space_indent
+                                      break
+                                    endif
+                                  endif
+                                  break
+   81              0.000009     endif
+   82              0.000147   endfor
+                            
+    1              0.000001   let a:detected.heuristics[a:source] = heuristics
+                            
+    1              0.000001   let max_frequency = 0
+    2              0.000003   for [shiftwidth, frequency] in items(heuristics.indents)
+    1              0.000001     if frequency > max_frequency || frequency == max_frequency && +shiftwidth < get(options, 'shiftwidth')
+    1              0.000001       let options.shiftwidth = +shiftwidth
+    1              0.000001       let max_frequency = frequency
+    1              0.000000     endif
+    2              0.000000   endfor
+                            
+    1              0.000001   if heuristics.hard && !heuristics.spaces && !has_key(a:detected.options, 'tabstop')
+                                let options = {'expandtab': 0, 'shiftwidth': 0}
+    1              0.000001   elseif heuristics.hard > heuristics.soft
+                                let options.expandtab = 0
+                                let options.tabstop = tabstop
+    1              0.000000   else
+    1              0.000000     if heuristics.soft
+    1              0.000000       let options.expandtab = 1
+    1              0.000000     endif
+    1              0.000014     if heuristics.hard || has_key(a:detected.options, 'tabstop') || stridx(join(a:lines, "\n"), "\t") >= 0
+                                  let options.tabstop = tabstop
+    1              0.000001     elseif !&g:shiftwidth && has_key(options, 'shiftwidth') && !has_key(a:detected.options, 'shiftwidth')
+                                  let options.tabstop = options.shiftwidth
+                                  let options.shiftwidth = 0
+    1              0.000000     endif
+    1              0.000000   endif
+                            
+    1              0.000002   call map(options, '[v:val, a:source]')
+    1              0.000002   call extend(a:detected.options, options, 'keep')
+
+FUNCTION  <SNR>27_Highlight_Matching_Pair()
+    Defined: /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/plugin/matchparen.vim:45
+Called 19 times
+Total time:   0.001002
+ Self time:   0.000834
+
+count  total (s)   self (s)
+   19              0.000072   if !exists("w:matchparen_ids")
+    1              0.000002     let w:matchparen_ids = []
+   19              0.000012   endif
+                              " Remove any previous match.
+   19   0.000244   0.000075   call s:Remove_Matches()
+                            
+                              " Avoid that we remove the popup menu.
+                              " Return when there are no colors (looks like the cursor jumps).
+   19              0.000049   if pumvisible() || (&t_Co < 8 && !has("gui_running"))
+                                return
+   19              0.000004   endif
+                            
+                              " Get the character under the cursor and check if it's in 'matchpairs'.
+   19              0.000036   let c_lnum = line('.')
+   19              0.000024   let c_col = col('.')
+   19              0.000011   let before = 0
+                            
+   19              0.000031   let text = getline(c_lnum)
+   19              0.000059   let c_before = text->strpart(0, c_col - 1)->slice(-1)
+   19              0.000032   let c = text->strpart(c_col - 1)->slice(0, 1)
+   19              0.000158   let plist = split(&matchpairs, '.\zs[:,]')
+   19              0.000034   let i = index(plist, c)
+   19              0.000011   if i < 0
+                                " not found, in Insert mode try character before the cursor
+   19              0.000032     if c_col > 1 && (mode() == 'i' || mode() == 'R')
+   13              0.000020       let before = strlen(c_before)
+   13              0.000008       let c = c_before
+   13              0.000014       let i = index(plist, c)
+   19              0.000005     endif
+   19              0.000008     if i < 0
+                                  " not found, nothing to do
+   19              0.000011       return
+                                endif
+                              endif
+                            
+                              " Figure out the arguments for searchpairpos().
+                              if i % 2 == 0
+                                let s_flags = 'nW'
+                                let c2 = plist[i + 1]
+                              else
+                                let s_flags = 'nbW'
+                                let c2 = c
+                                let c = plist[i - 1]
+                              endif
+                              if c == '['
+                                let c = '\['
+                                let c2 = '\]'
+                              endif
+                            
+                              " Find the match.  When it was just before the cursor move it there for a
+                              " moment.
+                              if before > 0
+                                let save_cursor = getcurpos()
+                                call cursor(c_lnum, c_col - before)
+                                defer setpos('.', save_cursor)
+                              endif
+                            
+                              if !has("syntax") || !exists("g:syntax_on")
+                                let s_skip = "0"
+                              elseif exists("b:ts_highlight") && &syntax != 'on'
+                                let s_skip = "match(v:lua.vim.treesitter.get_captures_at_cursor(), '" .. 'string\|character\|singlequote\|escape\|symbol\|comment' .. "') != -1"
+                              else
+                                " do not attempt to match when the syntax item where the cursor is
+                                " indicates there does not exist a matching parenthesis, e.g. for shells
+                                " case statement: "case $var in foobar)"
+                                "
+                                " add the check behind a filetype check, so it only needs to be
+                                " evaluated for certain filetypes
+                                if ['sh']->index(&filetype) >= 0 && synstack(".", col("."))->indexof({_, id -> synIDattr(id, "name") =~? "shSnglCase"}) >= 0
+                                  return
+                                endif
+                                " Build an expression that detects whether the current cursor position is
+                                " in certain syntax types (string, comment, etc.), for use as
+                                " searchpairpos()'s skip argument.
+                                " We match "escape" for special items, such as lispEscapeSpecial, and
+                                " match "symbol" for lispBarSymbol.
+                                let s_skip = 'synstack(".", col("."))' . '->indexof({_, id -> synIDattr(id, "name") =~? ' . '"string\\|character\\|singlequote\\|escape\\|symbol\\|comment"}) >= 0'
+                                " If executing the expression determines that the cursor is currently in
+                                " one of the syntax types, then we want searchpairpos() to find the pair
+                                " within those syntax types (i.e., not skip).  Otherwise, the cursor is
+                                " outside of the syntax types and s_skip should keep its value so we skip
+                                " any matching pair inside the syntax types.
+                                " Catch if this throws E363: pattern uses more memory than 'maxmempattern'.
+                                try
+                                  execute 'if ' . s_skip . ' | let s_skip = "0" | endif'
+                                catch /^Vim\%((\a\+)\)\=:E363/
+                                  " We won't find anything, so skip searching, should keep Vim responsive.
+                                  return
+                                endtry
+                              endif
+                            
+                              " Limit the search to lines visible in the window.
+                              let stoplinebottom = line('w$')
+                              let stoplinetop = line('w0')
+                              if i % 2 == 0
+                                let stopline = stoplinebottom
+                              else
+                                let stopline = stoplinetop
+                              endif
+                            
+                              " Limit the search time to 300 msec to avoid a hang on very long lines.
+                              " This fails when a timeout is not supported.
+                              if mode() == 'i' || mode() == 'R'
+                                let timeout = exists("b:matchparen_insert_timeout") ? b:matchparen_insert_timeout : g:matchparen_insert_timeout
+                              else
+                                let timeout = exists("b:matchparen_timeout") ? b:matchparen_timeout : g:matchparen_timeout
+                              endif
+                              try
+                                let [m_lnum, m_col] = searchpairpos(c, '', c2, s_flags, s_skip, stopline, timeout)
+                              catch /E118/
+                                " Can't use the timeout, restrict the stopline a bit more to avoid taking
+                                " a long time on closed folds and long lines.
+                                " The "viewable" variables give a range in which we can scroll while
+                                " keeping the cursor at the same position.
+                                " adjustedScrolloff accounts for very large numbers of scrolloff.
+                                let adjustedScrolloff = min([&scrolloff, (line('w$') - line('w0')) / 2])
+                                let bottom_viewable = min([line('$'), c_lnum + &lines - adjustedScrolloff - 2])
+                                let top_viewable = max([1, c_lnum-&lines+adjustedScrolloff + 2])
+                                " one of these stoplines will be adjusted below, but the current values are
+                                " minimal boundaries within the current window
+                                if i % 2 == 0
+                                  if has("byte_offset") && has("syntax_items") && &smc > 0
+                            	let stopbyte = min([line2byte("$"), line2byte(".") + col(".") + &smc * 2])
+                            	let stopline = min([bottom_viewable, byte2line(stopbyte)])
+                                  else
+                            	let stopline = min([bottom_viewable, c_lnum + 100])
+                                  endif
+                                  let stoplinebottom = stopline
+                                else
+                                  if has("byte_offset") && has("syntax_items") && &smc > 0
+                            	let stopbyte = max([1, line2byte(".") + col(".") - &smc * 2])
+                            	let stopline = max([top_viewable, byte2line(stopbyte)])
+                                  else
+                            	let stopline = max([top_viewable, c_lnum - 100])
+                                  endif
+                                  let stoplinetop = stopline
+                                endif
+                                let [m_lnum, m_col] = searchpairpos(c, '', c2, s_flags, s_skip, stopline)
+                              endtry
+                            
+                              " If a match is found setup match highlighting.
+                              if m_lnum > 0 && m_lnum >= stoplinetop && m_lnum <= stoplinebottom
+                                if !g:matchparen_disable_cursor_hl
+                                  call add(w:matchparen_ids, matchaddpos('MatchParen', [[c_lnum, c_col - before], [m_lnum, m_col]], 10))
+                                else
+                                  call add(w:matchparen_ids, matchaddpos('MatchParen', [[m_lnum, m_col]], 10))
+                                endif
+                                let w:paren_hl_on = 1
+                              endif
+
+FUNCTION  remote#host#RegisterPlugin()
+    Defined: /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/autoload/remote/host.vim:69
+Called 1 time
+Total time:   0.000037
+ Self time:   0.000029
+
+count  total (s)   self (s)
+    1   0.000009   0.000004   let plugins = remote#host#PluginsForHost(a:host)
+                            
+    1              0.000001   for plugin in plugins
+                                if plugin.path == a:path
+                                  throw 'Plugin "'.a:path.'" is already registered'
+                                endif
+    1              0.000001   endfor
+                            
+    1   0.000006   0.000003   if has_key(s:hosts, a:host) && remote#host#IsRunning(a:host)
+                                " For now we won't allow registration of plugins when the host is already
+                                " running.
+                                throw 'Host "'.a:host.'" is already running'
+    1              0.000000   endif
+                            
+    1              0.000001   for spec in a:specs
+                                let type = spec.type
+                                let name = spec.name
+                                let sync = spec.sync
+                                let opts = spec.opts
+                                let rpc_method = a:path
+                                if type == 'command'
+                                  let rpc_method .= ':command:'.name
+                                  call remote#define#CommandOnHost(a:host, rpc_method, sync, name, opts)
+                                elseif type == 'autocmd'
+                                  " Since multiple handlers can be attached to the same autocmd event by a
+                                  " single plugin, we need a way to uniquely identify the rpc method to
+                                  " call.  The solution is to append the autocmd pattern to the method
+                                  " name(This still has a limit: one handler per event/pattern combo, but
+                                  " there's no need to allow plugins define multiple handlers in that case)
+                                  let rpc_method .= ':autocmd:'.name.':'.get(opts, 'pattern', '*')
+                                  call remote#define#AutocmdOnHost(a:host, rpc_method, sync, name, opts)
+                                elseif type == 'function'
+                                  let rpc_method .= ':function:'.name
+                                  call remote#define#FunctionOnHost(a:host, rpc_method, sync, name, opts)
+                                else
+                                  echoerr 'Invalid declaration type: '.type
+                                endif
+    1              0.000001   endfor
+                            
+    1              0.000003   call add(plugins, {'path': a:path, 'specs': a:specs})
+
+FUNCTION  <SNR>20_DetectEditorConfig()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:270
+Called 1 time
+Total time:   0.000177
+ Self time:   0.000177
+
+count  total (s)   self (s)
+    1              0.000002   if empty(a:absolute_path)
+                                return [{}, '']
+    1              0.000000   endif
+    1              0.000001   let root = ''
+    1              0.000001   let tail = a:0 ? a:1 : '.editorconfig'
+    1              0.000002   let dir = fnamemodify(a:absolute_path, ':h')
+    1              0.000001   let previous_dir = ''
+    1              0.000000   let sections = []
+    1              0.000001   let overrides = get(g:, 'sleuth_editorconfig_overrides', {})
+    7              0.000016   while dir !=# previous_dir && dir !~# '^//\%([^/]\+/\=\)\=$'
+    6              0.000015     let head = substitute(dir, '/\=$', '/', '')
+    6              0.000018     let read_from = get(overrides, head . tail, get(overrides, head, head . tail))
+    6              0.000003     if read_from is# ''
+                                  break
+    6              0.000009     elseif type(read_from) == type('') && read_from !=# head . tail && read_from !~# '^/\|^\a\+:'
+                                  let read_from = simplify(head . read_from)
+    6              0.000001     endif
+    6              0.000026     let ftime = type(read_from) == type('') ? getftime(read_from) : -1
+    6              0.000015     let [cachetime; econfig] = get(s:editorconfig_cache, read_from, [-1, {}, []])
+    6              0.000003     if ftime != cachetime
+                                  let econfig = s:ReadEditorConfig(read_from)
+                                  let s:editorconfig_cache[read_from] = [ftime] + econfig
+                                  lockvar! s:editorconfig_cache[read_from]
+                                  unlockvar s:editorconfig_cache[read_from]
+    6              0.000001     endif
+    6              0.000007     call extend(sections, econfig[1], 'keep')
+    6              0.000006     if get(econfig[0], 'root', [''])[0] ==? 'true'
+                                  let root = head
+                                  break
+    6              0.000001     endif
+    6              0.000003     let previous_dir = dir
+    6              0.000005     let dir = fnamemodify(dir, ':h')
+    7              0.000002   endwhile
+                            
+    1              0.000001   let config = {}
+    1              0.000001   for [pattern, pairs] in sections
+                                if a:absolute_path =~# pattern
+                                  call extend(config, pairs)
+                                endif
+    1              0.000000   endfor
+                            
+    1              0.000001   return [config, root]
+
+FUNCTION  remote#host#PluginsForHost()
+    Defined: /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/autoload/remote/host.vim:177
+Called 1 time
+Total time:   0.000005
+ Self time:   0.000005
+
+count  total (s)   self (s)
+    1              0.000001   if !has_key(s:plugins_for_host, a:host)
+    1              0.000001     let s:plugins_for_host[a:host] = []
+    1              0.000000   end
+    1              0.000002   return s:plugins_for_host[a:host]
+
+FUNCTION  <SNR>20_DetectDeclared()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:488
+Called 1 time
+Total time:   0.000625
+ Self time:   0.000197
+
+count  total (s)   self (s)
+    1   0.000009   0.000008   let detected = {'bufname': s:Slash(@%), 'declared': {}}
+    1              0.000005   let absolute_or_empty = detected.bufname =~# '^$\|^\a\+:\|^/'
+    1              0.000003   if &l:buftype =~# '^\%(nowrite\)\=$' && !absolute_or_empty
+    1   0.000032   0.000031     let detected.bufname = substitute(s:Slash(getcwd()), '/\=$', '/', '') . detected.bufname
+    1              0.000001     let absolute_or_empty = 1
+    1              0.000000   endif
+    1              0.000001   let detected.path = absolute_or_empty ? detected.bufname : ''
+    1              0.000004   let pre = substitute(matchstr(detected.path, '^\a\a\+\ze:'), '^\a', '\u&', 'g')
+    1              0.000001   if len(pre) && exists('*' . pre . 'Real')
+                                let detected.path = s:Slash(call(pre . 'Real', [detected.path]))
+    1              0.000000   endif
+                            
+    1              0.000000   try
+    1              0.000003     if len(detected.path) && exists('*ExcludeBufferFromDiscovery') && !empty(ExcludeBufferFromDiscovery(detected.path, 'sleuth'))
+                                  let detected.path = ''
+    1              0.000000     endif
+                              catch
+    1              0.000001   endtry
+    1   0.000300   0.000123   let [detected.editorconfig, detected.root] = s:DetectEditorConfig(detected.path)
+    1   0.000054   0.000006   call extend(detected.declared, s:EditorConfigToOptions(detected.editorconfig))
+    1   0.000206   0.000005   call extend(detected.declared, s:ModelineOptions())
+    1              0.000000   return detected
+
+FUNCTION  <SNR>20_Apply()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:396
+Called 1 time
+Total time:   0.000075
+ Self time:   0.000075
+
+count  total (s)   self (s)
+    1              0.000002   let options = extend(copy(a:detected.defaults), a:detected.options)
+    1              0.000002   if get(a:detected.defaults, 'shiftwidth', [1])[0] == 0 && get(options, 'shiftwidth', [0])[0] != 0 && !has_key(a:detected.declared, 'tabstop')
+                                let options.tabstop = options.shiftwidth
+                                let options.shiftwidth = a:detected.defaults.shiftwidth
+    1              0.000000   endif
+    1              0.000001   if has_key(options, 'shiftwidth') && !has_key(options, 'expandtab')
+                                let options.expandtab = [stridx(join(getline(1, 256), "\n"), "\t") == -1, a:detected.bufname]
+    1              0.000000   endif
+    1              0.000001   if !exists('*shiftwidth') && !get(options, 'shiftwidth', [1])[0]
+                                let options.shiftwidth = [get(options, 'tabstop', [&tabstop])[0]] + options.shiftwidth[1:-1]
+    1              0.000000   endif
+    1              0.000000   let msg = ''
+    1              0.000000   let cmd = 'setlocal'
+   11              0.000003   for option in a:permitted_options
+   10              0.000014     if !exists('&' . option) || !has_key(options, option) || !&l:modifiable && index(s:safe_options, option) == -1
+    8              0.000001       continue
+    2              0.000000     endif
+    2              0.000001     let value = options[option]
+    2              0.000001     if has_key(s:booleans, option)
+    1              0.000001       let setting = (value[0] ? '' : 'no') . option
+    1              0.000000     else
+    1              0.000001       let setting = option . '=' . value[0]
+    2              0.000000     endif
+    2              0.000004     if getbufvar('', '&' . option) !=# value[0] || index(s:safe_options, option) >= 0
+    2              0.000002       let cmd .= ' ' . setting
+    2              0.000000     endif
+    2              0.000001     if !&verbose || a:silent
+    2              0.000001       if has_key(s:booleans, option)
+    1              0.000002         let msg .= ' ' . (value[0] ? '' : 'no') . get(s:short_options, option, option)
+    1              0.000000       else
+    1              0.000002         let msg .= ' ' . get(s:short_options, option, option) . '=' . value[0]
+    2              0.000000       endif
+    2              0.000000       continue
+                                endif
+                                if len(value) > 1
+                                  if value[1] ==# a:detected.bufname
+                                    let file = '%'
+                                  else
+                                    let file = value[1] =~# '/' ? fnamemodify(value[1], ':~:.') : value[1]
+                                    if file !=# value[1] && file[0:0] !=# '~'
+                                      let file = './' . file
+                                    endif
+                                  endif
+                                  if len(value) > 2
+                                    let file .= ' line ' . value[2]
+                                  endif
+                                  echo printf(':setlocal %-21s " from %s', setting, file)
+                                else
+                                  echo ':setlocal ' . setting
+                                endif
+    1              0.000001   endfor
+    1              0.000001   if !&verbose && !empty(msg) && !a:silent
+                                echo ':setlocal' . msg
+    1              0.000000   endif
+    1              0.000001   if has_key(options, 'shiftwidth')
+    1              0.000002     let cmd .= ' softtabstop=' . (exists('*shiftwidth') ? -1 : options.shiftwidth[0])
+                              else
+                                call s:Warn(':Sleuth failed to detect indent settings', a:silent)
+    1              0.000000   endif
+    1              0.000001   return cmd ==# 'setlocal' ? '' : cmd
+
+FUNCTION  remote#host#IsRunning()
+    Defined: /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/autoload/remote/host.vim:49
+Called 1 time
+Total time:   0.000003
+ Self time:   0.000003
+
+count  total (s)   self (s)
+    1              0.000001   if !has_key(s:hosts, a:name)
+                                throw 'No host named "'.a:name.'" is registered'
+    1              0.000000   endif
+    1              0.000001   return s:hosts[a:name].channel != 0
+
+FUNCTION  <SNR>16_MapCR()
+    Defined: ~/.local/share/nvim/lazy/vim-eunuch/plugin/eunuch.vim:481
+Called 1 time
+Total time:   0.000026
+ Self time:   0.000026
+
+count  total (s)   self (s)
+    1              0.000005   imap <silent><script> <SID>EunuchNewLine <C-R>=EunuchNewLine()<CR>
+    1              0.000009   let map = maparg('<CR>', 'i', 0, 1)
+    1              0.000006   let rhs = substitute(get(map, 'rhs', ''), '\c<sid>', '<SNR>' . get(map, 'sid') . '_', 'g')
+    1              0.000004   if get(g:, 'eunuch_no_maps') || rhs =~# 'Eunuch' || get(map, 'desc') =~# 'Eunuch' || get(map, 'buffer')
+    1              0.000001     return
+                              endif
+                              let imap = get(map, 'script', rhs !~? '<plug>') || get(map, 'noremap') ? 'imap <script>' : 'imap'
+                              if get(map, 'expr') && type(get(map, 'callback')) == type(function('tr'))
+                                lua local m = vim.fn.maparg('<CR>', 'i', 0, 1); vim.api.nvim_set_keymap('i', '<CR>', m.rhs or '', { expr = true, silent = true, callback = function() return vim.fn.EunuchNewLine(vim.api.nvim_replace_termcodes(m.callback(), true, true, m.replace_keycodes)) end, desc = "EunuchNewLine() wrapped around " .. (m.desc or "Lua function") })
+                              elseif get(map, 'expr') && !empty(rhs)
+                                exe imap '<silent><expr> <CR> EunuchNewLine(' . rhs . ')'
+                              elseif rhs =~? '^\%(<c-\]>\)\=<cr>' || rhs =~# '<[Pp]lug>\w\+CR'
+                                exe imap '<silent> <CR>' rhs . '<SID>EunuchNewLine'
+                              elseif empty(rhs)
+                                imap <script><silent><expr> <CR> EunuchNewLine("<Bslash>035<Bslash>r")
+                              endif
+
+FUNCTION  <SNR>20_EditorConfigToOptions()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:329
+Called 1 time
+Total time:   0.000048
+ Self time:   0.000048
+
+count  total (s)   self (s)
+    1              0.000001   let options = {}
+    1              0.000003   let pairs = map(copy(a:pairs), 'v:val[0]')
+    1              0.000001   let sources = map(copy(a:pairs), 'v:val[1:-1]')
+    1              0.000001   call filter(pairs, 'v:val !=? "unset"')
+                            
+    1              0.000001   if get(pairs, 'indent_style', '') ==? 'tab'
+                                let options.expandtab = [0] + sources.indent_style
+    1              0.000001   elseif get(pairs, 'indent_style', '') ==? 'space'
+                                let options.expandtab = [1] + sources.indent_style
+    1              0.000000   endif
+                            
+    1              0.000003   if get(pairs, 'indent_size', '') =~? '^[1-9]\d*$\|^tab$'
+                                let options.shiftwidth = [str2nr(pairs.indent_size)] + sources.indent_size
+                                if &g:shiftwidth == 0 && !has_key(pairs, 'tab_width') && pairs.indent_size !=? 'tab'
+                                  let options.tabstop = options.shiftwidth
+                                  let options.shiftwidth = [0] + sources.indent_size
+                                endif
+    1              0.000000   endif
+                            
+    1              0.000002   if get(pairs, 'tab_width', '') =~? '^[1-9]\d*$'
+                                let options.tabstop = [str2nr(pairs.tab_width)] + sources.tab_width
+                                if !has_key(pairs, 'indent_size') && get(pairs, 'indent_style', '') ==? 'tab'
+                                  let options.shiftwidth = [0] + options.tabstop[1:-1]
+                                endif
+    1              0.000000   endif
+                            
+    1              0.000002   if get(pairs, 'max_line_length', '') =~? '^[1-9]\d*$\|^off$'
+                                let options.textwidth = [str2nr(pairs.max_line_length)] + sources.max_line_length
+    1              0.000000   endif
+                            
+    1              0.000003   if get(pairs, 'insert_final_newline', '') =~? '^true$\|^false$'
+                                let options.endofline = [pairs.insert_final_newline ==? 'true'] + sources.insert_final_newline
+                                let options.fixendofline = copy(options.endofline)
+    1              0.000000   endif
+                            
+    1              0.000002   let eol = tolower(get(pairs, 'end_of_line', ''))
+    1              0.000001   if has_key(s:editorconfig_fileformat, eol)
+                                let options.fileformat = [s:editorconfig_fileformat[eol]] + sources.end_of_line
+    1              0.000000   endif
+                            
+    1              0.000001   let charset = tolower(get(pairs, 'charset', ''))
+    1              0.000001   if has_key(s:editorconfig_bomb, charset)
+                                let options.bomb = [s:editorconfig_bomb[charset]] + sources.charset
+                                let options.fileencoding = [substitute(charset, '\C-bom$', '', '')] + sources.charset
+    1              0.000000   endif
+                            
+    1              0.000001   let filetype = tolower(get(pairs, 'vim_filetype', 'unset'))
+    1              0.000001   if filetype !=# 'unset' && filetype =~# '^[.a-z0-9_-]*$'
+                                let options.filetype = [substitute(filetype, '^\.\+\|\.\+$', '', 'g')] + sources.vim_filetype
+    1              0.000000   endif
+                            
+    1              0.000000   return options
+
+FUNCTION  <SNR>41_SynSet()
+    Defined: /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/syntax/synload.vim:27
+Called 5 times
+Total time:   0.004127
+ Self time:   0.004127
+
+count  total (s)   self (s)
+                              " clear syntax for :set syntax=OFF  and any syntax name that doesn't exist
+    5              0.000011   syn clear
+    5              0.000009   if exists("b:current_syntax")
+                                unlet b:current_syntax
+    5              0.000002   endif
+                            
+    5              0.000010   0verbose let s = expand("<amatch>")
+    5              0.000004   if s == "ON"
+                                " :set syntax=ON
+                                if &filetype == ""
+                                  echohl ErrorMsg
+                                  echo "filetype unknown"
+                                  echohl None
+                                endif
+                                let s = &filetype
+    5              0.000003   elseif s == "OFF"
+                                let s = ""
+    5              0.000001   endif
+                            
+    5              0.000002   if s != ""
+                                " Load the syntax file(s).  When there are several, separated by dots,
+                                " load each in sequence.  Skip empty entries.
+    4              0.000005     for name in split(s, '\.')
+    2              0.000002       if !empty(name)
+                                    " XXX: "[.]" in the first pattern makes it a wildcard on Windows
+    2              0.004028         exe $'runtime! syntax/{name}[.]{{vim,lua}} syntax/{name}/*.{{vim,lua}}'
+    2              0.000001       endif
+    4              0.000002     endfor
+    5              0.000001   endif
+
+FUNCTION  <SNR>29_LocalBrowse()
+    Defined: /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/pack/dist/opt/netrw/plugin/netrwPlugin.vim:92
+Called 3 times
+Total time:   0.000074
+ Self time:   0.000074
+
+count  total (s)   self (s)
+                                " do not trigger in the terminal
+                                " https://github.com/vim/vim/issues/16463
+    3              0.000005     if &buftype ==# 'terminal'
+                                    return
+    3              0.000001     endif
+                            
+    3              0.000004     if !exists("s:vimentered")
+                                    " If s:vimentered doesn't exist, then the VimEnter event hasn't fired.  It will,
+                                    " and so s:VimEnter() will then be calling this routine, but this time with s:vimentered defined.
+                                    return
+    3              0.000001     endif
+                            
+    3              0.000008     if has("amiga")
+                                    " The check against '' is made for the Amiga, where the empty
+                                    " string is the current directory and not checking would break
+                                    " things such as the help command.
+                                    if a:dirname != '' && isdirectory(a:dirname)
+                                        sil! call netrw#LocalBrowseCheck(a:dirname)
+                                        if exists("w:netrw_bannercnt") && line('.') < w:netrw_bannercnt
+                                            exe w:netrw_bannercnt
+                                        endif
+                                    endif
+    3              0.000010     elseif isdirectory(a:dirname)
+                                    " Jul 13, 2021: for whatever reason, preceding the following call with
+                                    " a   sil!  causes an unbalanced if-endif vim error
+                                    call netrw#LocalBrowseCheck(a:dirname)
+                                    if exists("w:netrw_bannercnt") && line('.') < w:netrw_bannercnt
+                                        exe w:netrw_bannercnt
+                                    endif
+    3              0.000001     endif
+
+FUNCTION  <SNR>20_DetectHeuristics()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:513
+Called 1 time
+Total time:   0.002424
+ Self time:   0.000030
+
+count  total (s)   self (s)
+    1              0.000000   let detected = a:into
+    1              0.000002   let filetype = split(&l:filetype, '\.', 1)[0]
+    1              0.000001   if get(detected, 'filetype', '*') ==# filetype
+                                return detected
+    1              0.000000   endif
+    1              0.000001   let detected.filetype = filetype
+    1              0.000001   let options = copy(detected.declared)
+    1              0.000001   let detected.options = options
+    1              0.000001   let detected.heuristics = {}
+    1              0.000001   if has_key(detected, 'patterns')
+                                call remove(detected, 'patterns')
+    1              0.000000   endif
+    1   0.000009   0.000003   let detected.defaults = s:UserOptions(filetype, 'defaults')
+    1              0.000004   if empty(filetype) || !get(b:, 'sleuth_automatic', 1) || empty(get(b:, 'sleuth_heuristics', get(g:, 'sleuth_' . filetype . '_heuristics', get(g:, 'sleuth_heuristics', 1))))
+                                return detected
+    1              0.000000   endif
+    1   0.000003   0.000002   if s:Ready(detected)
+                                return detected
+    1              0.000000   endif
+                            
+    1              0.000005   let lines = getline(1, 1024)
+    1   0.002388   0.000004   call s:Guess(detected.bufname, detected, lines)
+    1   0.000004   0.000002   if s:Ready(detected)
+    1              0.000000     return detected
+                              elseif get(options, 'shiftwidth', [4])[0] < 4 && stridx(join(lines, "\n"), "\t") == -1
+                                let options.expandtab = [1, detected.bufname]
+                                return detected
+                              endif
+                              let dir = len(detected.path) ? fnamemodify(detected.path, ':h') : ''
+                              let root = len(detected.root) ? fnamemodify(detected.root, ':h') : dir ==# s:Slash(expand('~')) ? dir : fnamemodify(dir, ':h')
+                              if detected.bufname =~# '^\a\a\+:' || root ==# '.' || !isdirectory(root)
+                                let dir = ''
+                              endif
+                              let c = get(b:, 'sleuth_neighbor_limit', get(g:, 'sleuth_neighbor_limit', 8))
+                              if c <= 0 || empty(dir)
+                                let detected.patterns = []
+                              elseif type(get(b:, 'sleuth_globs')) == type([])
+                                let detected.patterns = b:sleuth_globs
+                              elseif type(get(g:, 'sleuth_' . detected.filetype . '_globs')) == type([])
+                                let detected.patterns = get(g:, 'sleuth_' . detected.filetype . '_globs')
+                              else
+                                let detected.patterns = ['*' . matchstr(detected.bufname, '/\@<!\.[^][{}*?$~\`./]\+$')]
+                                if detected.patterns ==# ['*']
+                                  let detected.patterns = [matchstr(detected.bufname, '/\zs[^][{}*?$~\`/]\+\ze/\=$')]
+                                  let dir = fnamemodify(dir, ':h')
+                                  if empty(detected.patterns[0])
+                                    let detected.patterns = []
+                                  endif
+                                endif
+                              endif
+                              while c > 0 && dir !~# '^$\|^//[^/]*$' && dir !=# fnamemodify(dir, ':h')
+                                for pattern in detected.patterns
+                                  for neighbor in split(glob(dir.'/'.pattern), "\n")[0:7]
+                                    if neighbor !=# detected.path && filereadable(neighbor)
+                                      call s:Guess(neighbor, detected, readfile(neighbor, '', 256))
+                                      let c -= 1
+                                    endif
+                                    if s:Ready(detected)
+                                      return detected
+                                    endif
+                                    if c <= 0
+                                      break
+                                    endif
+                                  endfor
+                                  if c <= 0
+                                    break
+                                  endif
+                                endfor
+                                if len(dir) <= len(root)
+                                  break
+                                endif
+                                let dir = fnamemodify(dir, ':h')
+                              endwhile
+                              if !has_key(options, 'shiftwidth')
+                                let detected.options = copy(detected.declared)
+                              endif
+                              return detected
+
+FUNCTION  <SNR>8_isHelm()
+    Defined: ~/.local/share/nvim/lazy/vim-helm/ftdetect/helm.vim:1
+Called 1 time
+Total time:   0.000063
+ Self time:   0.000063
+
+count  total (s)   self (s)
+    1              0.000042   let filepath = expand("%:p")
+                            
+                              " yaml/yml/tpl/txt inside templates dir
+    1              0.000010   if filepath =~ '\v/(templates)/.*\.(ya?ml|tpl|txt)$' | return 1 | endif
+                            
+    1              0.000002   let filename = expand("%:t")
+                            
+                              " helmfile templated values
+    1              0.000004   if filename =~ '\v.*\.gotmpl$' | return 1 | endif
+                            
+                              " helmfile.yaml / helmfile-my.yaml / helmfile_my.yaml etc
+    1              0.000003   if filename =~ '\v(helmfile).*\.ya?ml$' | return 1 | endif
+                            
+    1              0.000000   return 0
+
+FUNCTION  <SNR>27_Remove_Matches()
+    Defined: /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/plugin/matchparen.vim:203
+Called 23 times
+Total time:   0.000230
+ Self time:   0.000230
+
+count  total (s)   self (s)
+   23              0.000055   if exists('w:paren_hl_on') && w:paren_hl_on
+                                while !empty(w:matchparen_ids)
+                                  silent! call remove(w:matchparen_ids, 0)->matchdelete()
+                                endwhile
+                                let w:paren_hl_on = 0
+   23              0.000007   endif
+
+FUNCTION  <SNR>20_AutoInit()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:632
+Called 1 time
+Total time:   0.003166
+ Self time:   0.000003
+
+count  total (s)   self (s)
+    1   0.003165   0.000003   return s:Init(1, 1, 1, 1)
+
+FUNCTION  <SNR>20_Init()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:593
+Called 1 time
+Total time:   0.003162
+ Self time:   0.000038
+
+count  total (s)   self (s)
+    1              0.000001   if !a:redetect && exists('b:sleuth.defaults')
+                                let detected = b:sleuth
+    1              0.000000   endif
+    1              0.000001   unlet! b:sleuth
+    1              0.000004   if &l:buftype !~# '^\%(nowrite\|nofile\|acwrite\)\=$'
+                                return s:Warn(':Sleuth disabled for buftype=' . &l:buftype, a:silent)
+    1              0.000000   endif
+    1              0.000001   if &l:filetype ==# 'netrw'
+                                return s:Warn(':Sleuth disabled for filetype=' . &l:filetype, a:silent)
+    1              0.000000   endif
+    1              0.000001   if &l:binary
+                                return s:Warn(':Sleuth disabled for binary files', a:silent)
+    1              0.000000   endif
+    1              0.000001   if !exists('detected')
+    1   0.000629   0.000004     let detected = s:DetectDeclared()
+    1              0.000000   endif
+    1              0.000001   let setfiletype = ''
+    1              0.000001   if a:do_filetype && has_key(detected.declared, 'filetype')
+                                let filetype = detected.declared.filetype[0]
+                                if filetype !=# &l:filetype || empty(filetype)
+                                  let setfiletype = 'setlocal filetype=' . filetype
+                                else
+                                  let setfiletype = 'setfiletype ' . filetype
+                                endif
+    1              0.000000   endif
+    1              0.000001   exe setfiletype
+    1   0.002431   0.000007   call s:DetectHeuristics(detected)
+    1   0.000079   0.000005   let cmd = s:Apply(detected, (a:do_filetype ? ['filetype'] : []) + (a:unsafe ? s:all_options : s:safe_options), a:silent)
+    1              0.000001   let b:sleuth = detected
+    1              0.000001   if exists('s:polyglot') && !a:silent
+                                call s:Warn('Charlatan :Sleuth implementation in vim-polyglot has been found and disabled.')
+                                call s:Warn('To get rid of this message, uninstall vim-polyglot, or disable the')
+                                call s:Warn('corresponding feature in your vimrc:')
+                                call s:Warn('        let g:polyglot_disabled = ["autoindent"]')
+    1              0.000000   endif
+    1              0.000000   return cmd
+
+FUNCTION  <SNR>20_Ready()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:384
+Called 2 times
+Total time:   0.000003
+ Self time:   0.000003
+
+count  total (s)   self (s)
+    2              0.000003   return has_key(a:detected.options, 'expandtab') && has_key(a:detected.options, 'shiftwidth')
+
+FUNCTION  <SNR>1_LoadFTPlugin()
+    Defined: /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/ftplugin.vim:15
+Called 3 times
+Total time:   3.122855
+ Self time:   0.011775
+
+count  total (s)   self (s)
+    3              0.000014     if exists("b:undo_ftplugin")
+                                  exe b:undo_ftplugin
+                                  unlet! b:undo_ftplugin b:did_ftplugin
+    3              0.000002     endif
+                            
+    3              0.000009     let s = expand("<amatch>")
+    3              0.000004     if s != ""
+    3              0.000029       if &cpo =~# "S" && exists("b:did_ftplugin")
+                            	" In compatible mode options are reset to the global values, need to
+                            	" set the local values also when a plugin was already used.
+                            	unlet b:did_ftplugin
+    3              0.000001       endif
+                            
+                                  " When there is a dot it is used to separate filetype names.  Thus for
+                                  " "aaa.bbb" load "aaa" and then "bbb".
+    6              0.000014       for name in split(s, '\.')
+                                    " Load Lua ftplugins after Vim ftplugins _per directory_
+                                    " TODO(clason): use nvim__get_runtime when supports globs and modeline
+                                    " XXX: "[.]" in the first pattern makes it a wildcard on Windows
+    3   3.122717   0.011637         exe $'runtime! ftplugin/{name}[.]{{vim,lua}} ftplugin/{name}_*.{{vim,lua}} ftplugin/{name}/*.{{vim,lua}}'
+    6              0.000036       endfor
+    3              0.000001     endif
+
+FUNCTION  <SNR>20_Slash()
+    Defined: ~/.local/share/nvim/lazy/vim-sleuth/plugin/sleuth.vim:33
+Called 2 times
+Total time:   0.000002
+ Self time:   0.000002
+
+count  total (s)   self (s)
+    2              0.000002     return a:path
+
+FUNCTION  <SNR>2_LoadIndent()
+    Defined: /opt/homebrew/Cellar/neovim/0.11.3/share/nvim/runtime/indent.vim:14
+Called 3 times
+Total time:   0.002100
+ Self time:   0.002049
+
+count  total (s)   self (s)
+    3              0.000004     if exists("b:undo_indent")
+                                  exe b:undo_indent
+                                  unlet! b:undo_indent b:did_indent
+    3              0.000001     endif
+    3              0.000004     let s = expand("<amatch>")
+    3              0.000002     if s != ""
+    3              0.000003       if exists("b:did_indent")
+                            	unlet b:did_indent
+    3              0.000001       endif
+                            
+                                  " When there is a dot it is used to separate filetype names.  Thus for
+                                  " "aaa.bbb" load "indent/aaa.vim" and then "indent/bbb.vim".
+    6              0.000008       for name in split(s, '\.')
+                                    " XXX: "[.]" in the pattern makes it a wildcard on Windows
+    3   0.002061   0.002009         exe $'runtime! indent/{name}[.]{{vim,lua}}'
+    6              0.000003       endfor
+    3              0.000001     endif
+
+FUNCTIONS SORTED ON TOTAL TIME
+count  total (s)   self (s)  function
+    3   3.122855   0.011775  <SNR>1_LoadFTPlugin()
+    5   0.004127             <SNR>41_SynSet()
+    1   0.003166   0.000003  <SNR>20_AutoInit()
+    1   0.003162   0.000038  <SNR>20_Init()
+    1   0.002424   0.000030  <SNR>20_DetectHeuristics()
+    1   0.002384             <SNR>20_Guess()
+    3   0.002100   0.002049  <SNR>2_LoadIndent()
+   19   0.001002   0.000834  <SNR>27_Highlight_Matching_Pair()
+    1   0.000625   0.000197  <SNR>20_DetectDeclared()
+   23   0.000230             <SNR>27_Remove_Matches()
+    1   0.000201   0.000137  <SNR>20_ModelineOptions()
+    1   0.000177             <SNR>20_DetectEditorConfig()
+    1   0.000075             <SNR>20_Apply()
+    3   0.000074             <SNR>29_LocalBrowse()
+   10   0.000064             <SNR>20_ParseOptions()
+    1   0.000063             <SNR>8_isHelm()
+    1   0.000048             <SNR>20_EditorConfigToOptions()
+    1   0.000037   0.000029  remote#host#RegisterPlugin()
+    1   0.000026             <SNR>16_MapCR()
+    4   0.000025             remote#host#Register()
+
+FUNCTIONS SORTED ON SELF TIME
+count  total (s)   self (s)  function
+    3   3.122855   0.011775  <SNR>1_LoadFTPlugin()
+    5              0.004127  <SNR>41_SynSet()
+    1              0.002384  <SNR>20_Guess()
+    3   0.002100   0.002049  <SNR>2_LoadIndent()
+   19   0.001002   0.000834  <SNR>27_Highlight_Matching_Pair()
+   23              0.000230  <SNR>27_Remove_Matches()
+    1   0.000625   0.000197  <SNR>20_DetectDeclared()
+    1              0.000177  <SNR>20_DetectEditorConfig()
+    1   0.000201   0.000137  <SNR>20_ModelineOptions()
+    1              0.000075  <SNR>20_Apply()
+    3              0.000074  <SNR>29_LocalBrowse()
+   10              0.000064  <SNR>20_ParseOptions()
+    1              0.000063  <SNR>8_isHelm()
+    1              0.000048  <SNR>20_EditorConfigToOptions()
+    1   0.003162   0.000038  <SNR>20_Init()
+    1   0.002424   0.000030  <SNR>20_DetectHeuristics()
+    1   0.000037   0.000029  remote#host#RegisterPlugin()
+    1              0.000026  <SNR>16_MapCR()
+    4              0.000025  remote#host#Register()
+    1              0.000010  remote#host#RegisterClone()
+

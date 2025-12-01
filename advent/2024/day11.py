@@ -33,8 +33,8 @@ def blink(stones):
 
 
 for i in range(25):
-    print(i)
-    print(stones)
+    # print(i)
+    # print(stones)
     stones = blink(stones)
 
 print(len(stones))
