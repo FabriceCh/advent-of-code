@@ -63,6 +63,9 @@ class Grid:
         return value, x, y
 
     def cast_to_int(self):
+        """
+        Cast every element of the grid to int()
+        """
         self._grid = [[int(char) for char in line] for line in self._grid]
 
     def is_x_out_of_bounds(self, x):
@@ -79,8 +82,10 @@ class Grid:
             raise IndexError
         self._grid[y][x] = value
 
-    # get the value out of a position
     def get(self, x: int, y: int):
+        """
+        Get the value at (x, y)
+        """
         if x < 0 or y < 0:
             raise IndexError
         return self._grid[y][x]
@@ -256,7 +261,7 @@ class Grid:
 
 
 if __name__ == "__main__":
-    # space reserved for testing
+    # reserved for testing
     grid = Grid([[1, 2, 3], [3, 4, 5], [6, 7, 8]])
     n_coords = grid.get_neighbors_coords(1, 0)
     print(n_coords)
