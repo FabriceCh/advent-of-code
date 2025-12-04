@@ -22,7 +22,6 @@ def find_divisors_sqrt(n):
 
 
 for r in ranges:
-    print("between", r[0], r[1])
     for i in range(int(r[0]), int(r[1]) + 1):
         s = str(i)
         divisors = find_divisors_sqrt(len(s)) #divisors is just [2] for part 1 i guess
@@ -42,3 +41,4 @@ for r in ranges:
                 break
             
 print(total)
+
