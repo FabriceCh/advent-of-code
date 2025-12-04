@@ -33,8 +33,6 @@ for line in ar:
 
 print(total)
 
-
-
 #part2
 total = 0
 for line in ar:
@@ -42,16 +40,10 @@ for line in ar:
     remaining = 12
     for _ in range(12):
         obligatory_slice_size = len(line) - (remaining - 1)
-
-        if len(line) == obligatory_slice_size:
-            ans += line
-            break
         obslice = line[:obligatory_slice_size]
         ans.append(max(obslice))
         line = line[line.index(max(obslice)) + 1:]
         remaining -= 1
-    while len(ans) > 12:
-        ans.remove(min(ans))
     total += int("".join(ans))
 
 
