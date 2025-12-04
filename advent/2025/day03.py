@@ -1,5 +1,4 @@
 from advent.utils.utils import read_file
-from itertools import combinations
 
 ar = read_file("input")
 # ar = [
@@ -28,12 +27,12 @@ for line in ar:
         else:
             max1, max2 = max2, max1
 
-
     total += int(max1 + max2)
+
 
 print(total)
 
-#part2
+# part2
 total = 0
 for line in ar:
     ans = []
@@ -42,7 +41,7 @@ for line in ar:
         obligatory_slice_size = len(line) - (remaining - 1)
         obslice = line[:obligatory_slice_size]
         ans.append(max(obslice))
-        line = line[line.index(max(obslice)) + 1:]
+        line = line[line.index(max(obslice)) + 1 :]
         remaining -= 1
     total += int("".join(ans))
 
