@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from typing import Callable
+import functools
 
 
 def read_file(path="input"):
@@ -24,6 +25,14 @@ def count_occurences(input_list: list) -> dict:
         else:
             occurences[element] += 1
     return occurences
+
+def printer(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)  # Call the original function
+        print(result)
+        return result
+    return wrapper
 
 
 class Grid:
