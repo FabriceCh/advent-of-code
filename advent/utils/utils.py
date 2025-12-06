@@ -1,5 +1,6 @@
 from collections.abc import Sequence
-from typing import Callable
+from typing import Callable, Tuple
+import functools
 
 
 def read_file(path="input.txt") -> list[str]:
@@ -24,6 +25,31 @@ def count_occurences(input_list: list) -> dict:
         else:
             occurences[element] += 1
     return occurences
+
+def printer(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)  # Call the original function
+        print(result)
+        return result
+    return wrapper
+
+def merge_intervals(intervals: list[Tuple[int, int]]) -> list[Tuple[int, int]]:
+    intervals.sort(key=lambda x: x[0])
+    i = 0
+    new_intervals = [intervals.pop(0)]
+    for interval in intervals:
+        ramin, ramax = new_intervals[-1][0], new_intervals[-1][1]
+        rbmin, rbmax = interval[0], interval[1]
+        if  rbmin >= ramin and rbmin <= ramax:
+            new_r = (ramin, max(ramax, rbmax))
+            new_intervals.pop()
+            new_intervals.append(new_r)
+        else:
+            new_intervals.append(intervals[i])
+        i += 1
+    return new_intervals
+
 
 
 class Grid:
