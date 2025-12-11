@@ -77,6 +77,7 @@ last_direction = None
 
 part1_answer = 123540
 
+# dijkstra
 paths: list[tuple[int, int]] = []
 part1 = 0
 heapq.heapify(nexts)

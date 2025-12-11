@@ -75,16 +75,11 @@ def part2():
         if cur_number.replace(" ", "") == "" or (i == len(cols)):
             if sign == "+":
                 total += sum(numbers)
-                # print()
-                # print(numbers)
-                # print(sum(numbers))
             else:
                 subtotal = 1
                 for n in numbers:
                     subtotal *= n
                 total += subtotal
-                # print()
-                # print(subtotal)
             numbers = []
         if c[-1] in ["*", "+"]:
             sign = c[-1]

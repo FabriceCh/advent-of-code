@@ -105,6 +105,7 @@ class Grid:
 
     def set(self, x: int, y: int, value):
         if self.is_out_of_bounds(x, y):
+            print("x:", x, "y:", y)
             raise IndexError
         self._grid[y][x] = value
 
